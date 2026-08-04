@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.npm/
+
+# Build / output artifacts (don't index generated code)
+dist/
+.nuxt/
+.output/
+.nitro/
+.vite/
+.next/
+out/
+coverage/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# graphify's own generated knowledge graph (avoid self-recursion)
+/graphify-out
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Lockfiles (not source — graphify doesn't need them)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Env / secrets
+.env.prod
+.env*

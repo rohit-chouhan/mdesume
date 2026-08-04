@@ -1,0 +1,42 @@
+name: CI
+
+# Enforce project rules on every pull request and direct push to main.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Rule: strict ESLint must pass.
+      - name: Lint
+        run: bun run lint
+
+      # Rule: the Vitest suite (Preview + analyzer) must pass.
+      - name: Test
+        run: bun run test
+
+      # Rule: the static export must build with no TypeScript errors.
+      - name: Build static export
+        run: bun run build
+        env:
+          # Keep basePath empty for the build check; deploy.yml sets it for Pages.
+          NEXT_PUBLIC_BASE_PATH: ""

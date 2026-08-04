@@ -1,26 +1,671 @@
+/* Fonts used by the resume preview font picker. Only the weights the resume
+   CSS actually uses (400/600/700) are requested to keep the stylesheet small
+   and avoid bloating the dev-server Turbopack cache. Selected via the
+   Customizer; the UI shell itself uses Geist (loaded in layout.tsx). */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Lato:wght@400;700&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Outfit:wght@400;600;700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Enable `dark:` utilities based on a `.dark` class on <html> (class strategy),
+   so we control the theme in JS and persist it across reloads. */
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  body {
+    background-color: white !important;
+  }
+
+  /* Force browsers to print background colors and images */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Hide the app chrome (editor, toolbar, sidebar) from the print output.
+     react-to-print prints only the cloned .resume-preview-content node, so
+     everything else is hidden. We also neutralise the on-screen zoom wrapper. */
+  body * {
+    visibility: hidden;
+  }
+
+  .resume-preview-content,
+  .resume-preview-content * {
+    visibility: visible;
+  }
+
+  .resume-preview-content {
+    position: static !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* The wrapper that carries the screen zoom transform must not clip/offset
+     the print output. */
+  div[style*="scale("] {
+    transform: none !important;
+    width: 100% !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+@layer base {
+  :root {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+
+    --border: #e2e8f0;
+
+    /* Resume Dynamic Variables */
+    --resume-h1-color: #1f2937;
+    --resume-h2-color: #374151;
+    --resume-text-color: #4b5563;
+    --resume-font: "Inter", sans-serif;
+    --resume-padding: 2rem;
+    --resume-margin: 1rem;
+    --resume-line-height: 1.6;
+    --resume-list-cols: 1;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
+/* Custom Markdown Rendering Styles based on CSS variables */
+.resume-preview-content {
+  font-family: var(--resume-font);
+  color: var(--resume-text-color);
+  font-size: var(--resume-text-size, 12pt);
+  line-height: var(--resume-line-height);
+  padding: var(--resume-padding);
+  background: white;
+  min-height: var(--resume-height, 297mm);
+  width: var(--resume-width, 210mm);
+  margin: 0 auto;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  text-align: var(--resume-text-align, left);
+}
+
+.resume-preview-content h1 {
+  color: var(--resume-h1-color);
+  font-size: var(--resume-h1-size, 24pt);
+  font-weight: 700;
+  margin-bottom: var(--resume-margin);
+  border-bottom: 2px solid var(--resume-h1-color);
+  padding-bottom: 0.25rem;
+}
+
+.resume-preview-content h2 {
+  color: var(--resume-h2-color);
+  font-size: var(--resume-h2-size, 18pt);
+  font-weight: 600;
+  margin-top: var(--resume-section-spacing, 1.5rem);
+  margin-bottom: 0.75rem;
+}
+
+.resume-preview-content h3 {
+  color: var(--resume-h3-color);
+  font-size: var(--resume-h3-size, 14pt);
+  font-weight: 600;
+  margin-top: calc(var(--resume-section-spacing, 1.5rem) * 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.resume-preview-content p {
+  margin-bottom: var(--resume-margin);
+}
+
+.resume-preview-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: var(--resume-margin);
+}
+
+.resume-preview-content li {
+  margin-bottom: var(--resume-list-spacing, 0.25rem);
+}
+
+.resume-preview-content li> :last-child {
+  margin-bottom: 0;
+}
+
+/* 
+  Multi-column list support.
+  If --resume-list-cols > 1, apply column count to lists.
+*/
+.resume-preview-content.multi-col-lists ul {
+  column-count: var(--resume-list-cols);
+  column-gap: 2rem;
+}
+
+.resume-preview-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Custom scrollbar for editor */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Modern Template */
+.template-modern h1 {
+  border-bottom: none;
+  border-left: 8px solid var(--resume-h1-color);
+  padding-left: 1rem;
+}
+
+.template-modern h2 {
+  border-bottom: none;
+  border-left: 4px solid var(--resume-h2-color);
+  padding-left: 0.75rem;
+}
+
+.template-modern ul {
+  list-style-type: square;
+}
+
+/* Minimalist Template */
+.template-minimalist h1 {
+  border-bottom: none;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.template-minimalist h2 {
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+/* Elegant Template */
+.template-elegant h1 {
+  text-align: center;
+  border-bottom: none;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+
+.template-elegant h2 {
+  border-top: 1px solid var(--resume-h2-color);
+  border-bottom: 1px solid var(--resume-h2-color);
+  text-align: center;
+  padding: 0.75rem 0;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.template-elegant p,
+.template-elegant li {
+  line-height: calc(var(--resume-line-height) * 1.1);
+}
+
+/* Creative Template */
+.template-creative {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-top: 12px solid var(--resume-h1-color);
+  position: relative;
+}
+
+.template-creative h1 {
+  border-bottom: none;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-size: calc(var(--resume-h1-size) * 1.2);
+  margin-bottom: 1rem;
+  color: var(--resume-h1-color);
+}
+
+.template-creative h2 {
+  display: inline-block;
+  background-color: var(--resume-h2-color);
+  color: #ffffff;
+  padding: 0.4rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  border-bottom: none;
+  margin-top: 2rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.template-creative ul {
+  list-style-type: none;
+  padding-left: 1.5rem;
+}
+
+.template-creative li {
+  position: relative;
+}
+
+.template-creative li::before {
+  content: '✦';
+  color: var(--resume-h2-color);
+  position: absolute;
+  left: -1.2rem;
+  top: 0.1rem;
+  font-size: 0.9em;
+}
+
+/* Neo-Brutal Template */
+.template-brutal {
+  border: 4px solid #000;
+  box-shadow: 12px 12px 0px var(--resume-h1-color);
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.template-brutal:hover {
+  box-shadow: 8px 8px 0px var(--resume-h1-color);
+  transform: translate(4px, 4px);
+}
+
+.template-brutal h1 {
+  border-bottom: 4px solid #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  background-color: var(--resume-h1-color);
+  color: #fff;
+  padding: 1.5rem;
+  margin-top: calc(-1 * var(--resume-padding));
+  margin-left: calc(-1 * var(--resume-padding));
+  margin-right: calc(-1 * var(--resume-padding));
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 0px #000;
+}
+
+.template-brutal h2 {
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px var(--resume-h2-color);
+  padding: 0.75rem 1rem;
+  font-weight: 800;
+  background: #fff;
+  margin-bottom: 1.5rem;
+  margin-top: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.template-brutal a {
+  background-color: var(--resume-h2-color);
+  color: #fff;
+  padding: 0 0.25rem;
+  text-decoration: none;
+  border: 2px solid #000;
+  font-weight: bold;
+}
+
+.template-brutal a:hover {
+  background-color: #000;
+  color: var(--resume-h2-color);
+}
+
+/* Aesthetic Template */
+.template-aesthetic {
+  background: #fafafa;
+  color: var(--resume-text-color);
+}
+
+.template-aesthetic h1 {
+  border-bottom: none;
+  text-align: right;
+  font-weight: 300;
+  color: var(--resume-h1-color);
+  border-right: 4px solid var(--resume-h1-color);
+  padding-right: 1.5rem;
+  margin-bottom: 3rem;
+  letter-spacing: 0.05em;
+}
+
+.template-aesthetic h2 {
+  border-bottom: none;
+  color: var(--resume-h2-color);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.template-aesthetic h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--resume-h2-color);
+  opacity: 0.3;
+}
+
+/* Professional Template */
+.template-professional h1 {
+  border-bottom: 3px solid var(--resume-h1-color);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding-bottom: 1rem;
+}
+
+.template-professional h2 {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.25rem;
+  color: var(--resume-h2-color);
+  font-weight: 700;
+}
+
+.template-professional h3 {
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Bold Template */
+.template-bold h1 {
+  background: var(--resume-h1-color);
+  color: #ffffff;
+  padding: 1.5rem;
+  margin-top: calc(-1 * var(--resume-padding));
+  margin-left: calc(-1 * var(--resume-padding));
+  margin-right: calc(-1 * var(--resume-padding));
+  margin-bottom: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+.template-bold h2 {
+  border-left: 6px solid var(--resume-h2-color);
+  padding-left: 1rem;
+  background: #f1f5f9;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-bottom: none;
+}
+
+/* Academic Template */
+.template-academic {
+  font-family: "EB Garamond", "Times New Roman", serif !important;
+}
+
+.template-academic h1 {
+  text-align: center;
+  border-bottom: 1px solid #000;
+  border-top: 1px solid #000;
+  padding: 1rem 0;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.template-academic h2 {
+  border-bottom: 1px solid var(--resume-h2-color);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  margin-top: 1.5rem;
+}
+
+.template-academic h3 {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.template-academic ul {
+  list-style-type: circle;
+}
+
+/* Targeted List Columns */
+div[data-columns="1"]+ul {
+  column-count: 1 !important;
+}
+
+div[data-columns="2"]+ul {
+  column-count: 2 !important;
+  column-gap: 2rem;
+}
+
+div[data-columns="3"]+ul {
+  column-count: 3 !important;
+  column-gap: 2rem;
+}
+
+div[data-columns="4"]+ul {
+  column-count: 4 !important;
+  column-gap: 2rem;
+}
+
+/* AST Column Classes */
+.columns-2 {
+  column-count: 2;
+  column-gap: 2rem;
+}
+
+.columns-3 {
+  column-count: 3;
+  column-gap: 2rem;
+}
+
+.columns-4 {
+  column-count: 4;
+  column-gap: 2rem;
+}
+
+/* Fix vertical alignment at the top of columns */
+.columns-2>*:first-child,
+.columns-3>*:first-child,
+.columns-4>*:first-child {
+  margin-top: 0 !important;
+}
+
+/* Custom directive styles */
+.resume-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.25rem 0;
+}
+
+.resume-badge {
+  display: inline-block;
+  background: var(--resume-h2-color, #374151);
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 0.3rem 0.55rem;
+  border-radius: 9999px;
+}
+
+.resume-rating {
+  display: inline-flex;
+  gap: 0.2rem;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+}
+
+.resume-rating-bar {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: #d1d5db;
+  display: inline-block;
+}
+
+.resume-rating-bar.filled {
+  background: var(--resume-h1-color, #1f2937);
+}
+
+.resume-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  float: right;
+  margin: 0 0 0.5rem 0.75rem;
+  border: 2px solid var(--resume-h1-color, #1f2937);
+}
+
+.resume-qr {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border: 2px dashed #94a3b8;
+  border-radius: 6px;
+  font-size: 0.55rem;
+  color: #64748b;
+  text-align: center;
+  word-break: break-all;
+  padding: 2px;
+  background: repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 4px, #fff 4px, #fff 8px);
+}
+
+.resume-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+}
+
+.resume-row>* {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Auto-split trailing date/separator is pushed to the right edge. */
+.resume-row-date {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--resume-text-color, #4b5563);
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.resume-note {
+  border-left: 3px solid var(--resume-h2-color, #374151);
+  background: #f8fafc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0 6px 6px 0;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+.resume-compact>* {
+  margin-top: 0 !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.resume-compact>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Render nested lists without bullet markers. */
+.resume-no-bullets ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.resume-no-bullets ul li {
+  margin-bottom: var(--resume-list-spacing, 0.25rem);
+}
+
+/* react-select (Font Family picker) — dark theme support.
+   The control/menu/options are rendered with inline styles, so we override
+   them under .dark to keep selected/option text readable on a dark surface. */
+.dark .select__control {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+
+.dark .select__control--is-focused {
+  border-color: #6366f1;
+}
+
+.dark .select__single-value,
+.dark .select__input-container {
+  color: #f1f5f9;
+}
+
+.dark .select__placeholder {
+  color: #94a3b8;
+}
+
+.dark .select__indicator {
+  color: #94a3b8;
+}
+
+.dark .select__menu {
+  background-color: #1e293b;
+  border: 1px solid #475569;
+}
+
+.dark .select__option {
+  color: #f1f5f9;
+  background-color: transparent;
+}
+
+.dark .select__option--is-focused {
+  background-color: #334155;
+}
+
+.dark .select__option--is-selected {
+  background-color: #4f46e5;
+  color: #ffffff;
 }
