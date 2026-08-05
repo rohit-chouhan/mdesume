@@ -30,13 +30,22 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build static export
-        # Set BASE_PATH to /<repo> for project-pages deploys, empty for user/org pages.
+        # Determine the base path:
+        #  - If a CNAME file is present, the site is served from a custom domain
+        #    (root), so basePath must be empty.
+        #  - Otherwise this is a GitHub Pages project page, served under /<repo>,
+        #    so basePath is set to the repo name.
+        # (The previous behaviour always used /<repo>, which broke custom-domain
+        #  deploys because every asset was prefixed with the wrong path.)
         run: |
-          BASE_PATH="${{ github.event.repository.name && format('/{0}', github.event.repository.name) || '' }}"
-          echo "Using basePath: ${BASE_PATH}"
-          bun run build
-        env:
-          NEXT_PUBLIC_BASE_PATH: ${{ github.event.repository.name }}
+          if [ -f "public/CNAME" ]; then
+            BASE_PATH=""
+            echo "Custom domain detected (CNAME present) — basePath: (root)"
+          else
+            BASE_PATH="/${{ github.event.repository.name }}"
+            echo "Project page deploy — basePath: ${BASE_PATH}"
+          fi
+          NEXT_PUBLIC_BASE_PATH="${BASE_PATH}" bun run build
 
       - name: Ensure .nojekyll
         run: touch out/.nojekyll

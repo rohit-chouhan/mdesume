@@ -102,8 +102,8 @@ export default function TemplateSelectorModal({ isOpen, onClose, currentTemplate
               key={tag}
               onClick={() => setActiveTag(tag)}
               className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors shrink-0 ${activeTag === tag
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                 }`}
             >
               {tag}
@@ -125,8 +125,8 @@ export default function TemplateSelectorModal({ isOpen, onClose, currentTemplate
                     onClose();
                   }}
                   className={`group relative flex flex-col bg-white dark:bg-slate-800 rounded-lg border-2 transition-all cursor-pointer ${isSelected
-                      ? 'border-primary shadow-md ring-4 ring-primary/10'
-                      : 'border-transparent shadow hover:border-slate-300 hover:shadow-lg dark:border-slate-700 dark:hover:border-slate-600'
+                    ? 'border-primary shadow-md ring-4 ring-primary/10'
+                    : 'border-transparent shadow hover:border-slate-300 hover:shadow-lg dark:border-slate-700 dark:hover:border-slate-600'
                     }`}
                 >
                   {/* Selection Badge */}

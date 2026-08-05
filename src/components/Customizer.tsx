@@ -102,8 +102,8 @@ export default function Customizer({ styles, onChange }: CustomizerProps) {
                     key={align.value}
                     onClick={() => handleChange('textAlign', align.value)}
                     className={`flex-1 py-1.5 flex justify-center items-center rounded border transition-colors ${(styles.textAlign || 'left') === align.value
-                        ? 'border-primary bg-blue-50 text-primary dark:bg-blue-950/40 dark:text-blue-300'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                      ? 'border-primary bg-blue-50 text-primary dark:bg-blue-950/40 dark:text-blue-300'
+                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                       }`}
                     title={`Align ${align.value}`}
                   >
@@ -389,8 +389,8 @@ export default function Customizer({ styles, onChange }: CustomizerProps) {
                     key={num}
                     onClick={() => handleChange('listColumns', num)}
                     className={`flex-1 py-1.5 text-sm rounded font-medium border transition-colors ${styles.listColumns === num
-                        ? 'border-primary bg-blue-50 text-primary dark:bg-blue-950/40 dark:text-blue-300'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                      ? 'border-primary bg-blue-50 text-primary dark:bg-blue-950/40 dark:text-blue-300'
+                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                       }`}
                   >
                     {num} {num === 1 ? 'Col' : 'Cols'}

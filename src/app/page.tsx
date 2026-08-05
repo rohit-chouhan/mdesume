@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { ArrowRight, Zap, Shield, Layout, Code2, FileText, CheckCircle2, BookOpen } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
+const GithubIcon = ({ size = 18, className, style }: { size?: number; className?: string; style?: React.CSSProperties }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /><path d="M9 18c-4.51 2-5-2-7-2" /></svg>
+);
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900">
@@ -24,13 +28,13 @@ export default function LandingPage() {
               <BookOpen size={18} /> Guide
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/rohit-chouhan/mdesume"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="mdesume on GitHub"
               className="hidden sm:flex items-center gap-1.5 text-slate-500 hover:text-slate-900 transition-colors"
             >
-              <Code2 size={18} /> GitHub
+              <GithubIcon size={18} /> GitHub
             </a>
             <Link
               href="/dashboard"
@@ -77,12 +81,12 @@ export default function LandingPage() {
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/rohit-chouhan/mdesume"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 px-8 py-4 rounded-full font-bold text-lg transition-all shadow-sm w-full sm:w-auto dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 dark:border-slate-700"
             >
-              <Code2 size={20} />
+              <GithubIcon size={20} />
               View Source
             </a>
           </div>
@@ -221,13 +225,13 @@ export default function LandingPage() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com"
+              href="https://github.com/rohit-chouhan/mdesume"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="mdesume on GitHub"
               className="text-slate-400 hover:text-slate-800 dark:text-slate-500 dark:hover:text-white transition-colors"
             >
-              <Code2 size={20} />
+              <GithubIcon size={20} />
             </a>
           </div>
         </div>

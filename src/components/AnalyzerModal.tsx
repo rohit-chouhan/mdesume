@@ -31,7 +31,7 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 sm:p-6">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
           <div className="flex items-center gap-3">
@@ -43,7 +43,7 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
               <p className="text-sm text-slate-500 mt-0.5">Automated heuristic review for maximum impact.</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors"
           >
@@ -54,7 +54,7 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
         <div className="flex-1 overflow-y-auto p-6 bg-white">
           {result ? (
             <div className="space-y-8">
-              
+
               {/* Score Section */}
               <div className="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-xl border border-slate-100">
                 <div className="relative w-32 h-32 flex items-center justify-center">
@@ -70,7 +70,7 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
                     <path
                       className={
                         result.score >= 80 ? "text-green-500" :
-                        result.score >= 60 ? "text-amber-500" : "text-red-500"
+                          result.score >= 60 ? "text-amber-500" : "text-red-500"
                       }
                       strokeDasharray={`${result.score}, 100`}
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -86,8 +86,8 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
                 </div>
                 <p className="mt-4 text-sm font-medium text-slate-600">
                   {result.score >= 90 ? "Excellent! Your resume is highly optimized." :
-                   result.score >= 70 ? "Good start, but there's room for improvement." :
-                   "Needs significant improvements to stand out."}
+                    result.score >= 70 ? "Good start, but there's room for improvement." :
+                      "Needs significant improvements to stand out."}
                 </p>
               </div>
 
@@ -96,27 +96,25 @@ export default function AnalyzerModal({ isOpen, onClose, markdown }: AnalyzerMod
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Detailed Feedback</h3>
                 <div className="space-y-3">
                   {result.feedback.map((item, index) => (
-                    <div 
+                    <div
                       key={index}
-                      className={`flex items-start gap-3 p-4 rounded-lg border ${
-                        item.type === 'error' ? 'bg-red-50 border-red-100 text-red-900' :
-                        item.type === 'warning' ? 'bg-amber-50 border-amber-100 text-amber-900' :
-                        'bg-green-50 border-green-100 text-green-900'
-                      }`}
+                      className={`flex items-start gap-3 p-4 rounded-lg border ${item.type === 'error' ? 'bg-red-50 border-red-100 text-red-900' :
+                          item.type === 'warning' ? 'bg-amber-50 border-amber-100 text-amber-900' :
+                            'bg-green-50 border-green-100 text-green-900'
+                        }`}
                     >
                       <div className="shrink-0 mt-0.5">
                         {item.type === 'error' ? <XCircle size={18} className="text-red-500" /> :
-                         item.type === 'warning' ? <AlertTriangle size={18} className="text-amber-500" /> :
-                         <CheckCircle2 size={18} className="text-green-500" />}
+                          item.type === 'warning' ? <AlertTriangle size={18} className="text-amber-500" /> :
+                            <CheckCircle2 size={18} className="text-green-500" />}
                       </div>
                       <div className="flex-1">
                         <p className="text-sm leading-snug">{item.message}</p>
                         {item.line !== undefined && (
-                          <p className={`text-xs mt-1 font-medium ${
-                            item.type === 'error' ? 'text-red-700/70' :
-                            item.type === 'warning' ? 'text-amber-700/70' :
-                            'text-green-700/70'
-                          }`}>
+                          <p className={`text-xs mt-1 font-medium ${item.type === 'error' ? 'text-red-700/70' :
+                              item.type === 'warning' ? 'text-amber-700/70' :
+                                'text-green-700/70'
+                            }`}>
                             Line {item.line}
                           </p>
                         )}

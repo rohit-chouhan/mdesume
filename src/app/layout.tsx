@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mdesume.example.com"),
+  metadataBase: new URL("https://mdesume.rohitchouhan.com"),
   title: {
     default: "mdesume — Markdown Resume Builder",
     template: "%s · mdesume",
