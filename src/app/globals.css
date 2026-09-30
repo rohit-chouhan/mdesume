@@ -505,11 +505,171 @@ div[data-columns="4"]+ul {
   column-gap: 2rem;
 }
 
-/* Fix vertical alignment at the top of columns */
-.columns-2>*:first-child,
-.columns-3>*:first-child,
-.columns-4>*:first-child {
+.columns-2,
+.columns-3,
+.columns-4 {
+  orphans: 2;
+  widows: 2;
+}
+
+/* Fix vertical alignment at the top of all columns */
+.columns-2 > *:first-child,
+.columns-3 > *:first-child,
+.columns-4 > *:first-child,
+.columns-2 > .resume-no-bullets:first-child > *:first-child,
+.columns-3 > .resume-no-bullets:first-child > *:first-child,
+.columns-4 > .resume-no-bullets:first-child > *:first-child,
+.columns-2 > .resume-compact:first-child > *:first-child,
+.columns-3 > .resume-compact:first-child > *:first-child,
+.columns-4 > .resume-compact:first-child > *:first-child,
+.columns-2 > .resume-align:first-child > *:first-child,
+.columns-3 > .resume-align:first-child > *:first-child,
+.columns-4 > .resume-align:first-child > *:first-child {
   margin-top: 0 !important;
+}
+
+/* Prevent items from breaking or cropping across columns */
+.columns-2 > *,
+.columns-3 > *,
+.columns-4 > * {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+/* Allow lists themselves to flow and distribute across columns,
+   even when nested inside modifier wrappers */
+.columns-2 ul,
+.columns-2 ol,
+.columns-3 ul,
+.columns-3 ol,
+.columns-4 ul,
+.columns-4 ol,
+.resume-preview-content.multi-col-lists ul,
+div[data-columns] + ul {
+  break-inside: auto !important;
+  page-break-inside: auto !important;
+  -webkit-column-break-inside: auto !important;
+}
+
+/* Transparent modifier/layout wrappers inside columns must never be treated as unbreakable monolithic cards */
+.columns-2 > .resume-no-bullets,
+.columns-3 > .resume-no-bullets,
+.columns-4 > .resume-no-bullets,
+.columns-2 > .resume-compact,
+.columns-3 > .resume-compact,
+.columns-4 > .resume-compact,
+.columns-2 > .resume-align,
+.columns-3 > .resume-align,
+.columns-4 > .resume-align,
+.columns-2 .resume-no-bullets,
+.columns-3 .resume-no-bullets,
+.columns-4 .resume-no-bullets,
+.columns-2 .resume-compact,
+.columns-3 .resume-compact,
+.columns-4 .resume-compact,
+.columns-2 .resume-align,
+.columns-3 .resume-align,
+.columns-4 .resume-align {
+  break-inside: auto !important;
+  page-break-inside: auto !important;
+  -webkit-column-break-inside: auto !important;
+}
+
+/* Prevent individual list items from breaking across columns */
+.columns-2 li,
+.columns-3 li,
+.columns-4 li,
+.resume-preview-content.multi-col-lists ul > li,
+div[data-columns] + ul > li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+/* Prevent paragraphs from breaking across columns */
+.columns-2 p,
+.columns-3 p,
+.columns-4 p {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+/* Keep headings attached to following content without breaking */
+.columns-2 h3,
+.columns-2 h4,
+.columns-2 h5,
+.columns-2 h6,
+.columns-3 h3,
+.columns-3 h4,
+.columns-3 h5,
+.columns-3 h6,
+.columns-4 h3,
+.columns-4 h4,
+.columns-4 h5,
+.columns-4 h6 {
+  break-after: avoid;
+  page-break-after: avoid;
+  -webkit-column-break-after: avoid;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+/* Grouped column item (e.g. heading + description + link) */
+.column-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  display: block;
+  margin-bottom: calc(var(--resume-section-spacing, 1.5rem) * 0.7);
+}
+
+.column-item > *:first-child {
+  margin-top: 0 !important;
+}
+
+.column-item > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Custom Alignment Directive Classes:
+   Ensures user explicit align directives override template-level rules */
+.resume-align-left,
+.resume-align-left > *,
+.resume-align-left h1,
+.resume-align-left h2,
+.resume-align-left h3,
+.resume-align-left p {
+  text-align: left !important;
+}
+
+.resume-align-center,
+.resume-align-center > *,
+.resume-align-center h1,
+.resume-align-center h2,
+.resume-align-center h3,
+.resume-align-center p {
+  text-align: center !important;
+}
+
+.resume-align-right,
+.resume-align-right > *,
+.resume-align-right h1,
+.resume-align-right h2,
+.resume-align-right h3,
+.resume-align-right p {
+  text-align: right !important;
+}
+
+.resume-align-justify,
+.resume-align-justify > *,
+.resume-align-justify h1,
+.resume-align-justify h2,
+.resume-align-justify h3,
+.resume-align-justify p {
+  text-align: justify !important;
 }
 
 /* Custom directive styles */
@@ -616,13 +776,21 @@ div[data-columns="4"]+ul {
 }
 
 /* Render nested lists without bullet markers. */
-.resume-no-bullets ul {
+.resume-no-bullets ul,
+.resume-no-bullets ol {
   list-style: none;
   padding-left: 0;
 }
 
-.resume-no-bullets ul li {
+.resume-no-bullets ul li,
+.resume-no-bullets ol li {
   margin-bottom: var(--resume-list-spacing, 0.25rem);
+}
+
+.resume-no-bullets ul li::before,
+.resume-no-bullets ol li::before {
+  display: none !important;
+  content: none !important;
 }
 
 /* react-select (Font Family picker) — dark theme support.

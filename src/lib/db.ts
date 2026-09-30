@@ -1,5 +1,21 @@
 import { get, set, del, keys } from 'idb-keyval';
 
+export interface ResumeMetadata {
+  title?: string;
+  author?: string;
+  subject?: string;
+  keywords?: string;
+  creator?: string;
+}
+
+export const DEFAULT_METADATA: ResumeMetadata = {
+  title: '',
+  author: '',
+  subject: '',
+  keywords: '',
+  creator: 'mdesume',
+};
+
 export interface ResumeData {
   id: string;
   title: string;
@@ -7,6 +23,7 @@ export interface ResumeData {
   createdAt: number;
   updatedAt: number;
   styles: ResumeStyles;
+  metadata?: ResumeMetadata;
 }
 
 export interface ResumeStyles {
@@ -33,6 +50,7 @@ export interface ResumeStyles {
   linkColor?: string;
   iconColor?: string;
   hideLinkUnderline?: boolean;
+  metadata?: ResumeMetadata;
 }
 
 const DEFAULT_STYLES: ResumeStyles = {
@@ -121,6 +139,13 @@ export const db = {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       styles: { ...DEFAULT_STYLES },
+      metadata: {
+        title: title || '',
+        author: '',
+        subject: '',
+        keywords: '',
+        creator: 'mdesume',
+      },
     };
     await set(newResume.id, newResume);
     return newResume;
@@ -145,6 +170,13 @@ export const db = {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       styles: { ...DEFAULT_STYLES, ...resume.styles },
+      metadata: resume.metadata ? { ...resume.metadata } : {
+        title: resume.title || '',
+        author: '',
+        subject: '',
+        keywords: '',
+        creator: 'mdesume',
+      },
     };
     await set(imported.id, imported);
     return imported;

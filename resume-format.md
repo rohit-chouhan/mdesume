@@ -84,6 +84,14 @@ TypeScript, React, Node.js, GraphQL, Docker, CI/CD
 ::end-badges::
 ```
 
+### Links without icons — `::no-icon::[Title](url)`
+
+Suppress the automated platform icon (Globe, GitHub, LinkedIn, etc.) for any specific link in a heading, paragraph, or list item:
+
+```markdown
+### ::no-icon::[WhatsApp SDK: Business API Integration Framework](https://pub.dev/packages/whatsapp)
+```
+
 ### Spacing
 
 Use blank lines for paragraph spacing as normal. Avoid raw `<br>`; the renderer

@@ -47,22 +47,23 @@ interface RemarkNode {
  * the rendered resume and break row/column layouts.
  */
 const normalizeDirectives = (markdown: string): string => {
-  const DIRECTIVE_RE = /::[\w-]+(?:\[[^\]]*\])?::/g;
-  const DIRECTIVE_LINE_RE = /^::[\w-]+(?:\[[^\]]*\])?::$/;
+  // Matches block-level directives (::col-N::, ::row::, etc.).
+  // Excludes inline modifiers like ::no-icon:: so they remain attached to headings/paragraphs.
+  const BLOCK_DIRECTIVE_LINE_RE = /^::(?!no-icons?::)[\w-]+(?:\[[^\]]*\])?::$/i;
 
-  // First, break directives that are glued inline (no surrounding newlines).
-  // Insert a newline between any non-newline char and a directive, and between
-  // a directive and any following non-newline char.
-  let result = markdown.replace(/(.)(::[\w-]+(?:\[[^\]]*\])?::)/g, '$1\n$2');
-  result = result.replace(/(::[\w-]+(?:\[[^\]]*\])?::)(.)/g, '$1\n$2');
+  // First, break block directives that are glued inline (no surrounding newlines).
+  // Insert a newline between any non-newline char and a block directive, and between
+  // a block directive and any following non-newline char.
+  let result = markdown.replace(/(.)(::(?!no-icons?::)[\w-]+(?:\[[^\]]*\])?::)/gi, '$1\n$2');
+  result = result.replace(/(::(?!no-icons?::)[\w-]+(?:\[[^\]]*\])?::)(.)/gi, '$1\n$2');
 
   const lines = result.split('\n');
   const out: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const isDirective = DIRECTIVE_LINE_RE.test(line.trim());
-    const nextIsDirective = i < lines.length - 1 && DIRECTIVE_LINE_RE.test(lines[i + 1].trim());
+    const isDirective = BLOCK_DIRECTIVE_LINE_RE.test(line.trim());
+    const nextIsDirective = i < lines.length - 1 && BLOCK_DIRECTIVE_LINE_RE.test(lines[i + 1].trim());
 
     // Blank line before a directive (and not at the very top)
     if (isDirective && out.length > 0 && out[out.length - 1].trim() !== '') {
@@ -126,6 +127,60 @@ const makeRowDateNode = (date: string) => ({
   data: { hName: 'span', hProperties: { className: 'resume-row-date' } },
   children: [{ type: 'text', value: date }],
 });
+
+// Helper to group heading-based entries in multi-column layouts into atomic items,
+// preventing paragraphs and links from being split across columns or orphaned.
+const groupColumnItems = (children: RemarkNode[]): RemarkNode[] => {
+  const headingDepths = children
+    .filter((c) => c.type === 'heading' && c.depth != null && c.depth >= 3)
+    .map((c) => c.depth as number);
+
+  if (headingDepths.length === 0) {
+    return children;
+  }
+
+  const minDepth = Math.min(...headingDepths);
+  const grouped: RemarkNode[] = [];
+  let currentGroup: RemarkNode[] = [];
+
+  const flushGroup = () => {
+    if (currentGroup.length > 0) {
+      grouped.push({
+        type: 'container',
+        data: {
+          hName: 'div',
+          hProperties: { className: 'column-item' },
+        },
+        children: currentGroup,
+      });
+      currentGroup = [];
+    }
+  };
+
+  for (const child of children) {
+    const isSpacer =
+      child.data?.hProperties?.style != null &&
+      typeof child.data.hProperties.style === 'object' &&
+      'height' in (child.data.hProperties.style as Record<string, unknown>);
+
+    if (child.type === 'heading' && child.depth != null && child.depth === minDepth) {
+      flushGroup();
+      currentGroup.push(child);
+    } else if (isSpacer) {
+      flushGroup();
+      grouped.push(child);
+    } else {
+      if (currentGroup.length > 0) {
+        currentGroup.push(child);
+      } else {
+        grouped.push(child);
+      }
+    }
+  }
+
+  flushGroup();
+  return grouped;
+};
 
 // Inline remark plugin to handle custom directives
 const remarkCustomDirectives = () => (tree: RemarkNode) => {
@@ -272,7 +327,13 @@ const remarkCustomDirectives = () => (tree: RemarkNode) => {
         const alignNode = {
           type: 'container',
           name: 'align',
-          data: { hName: 'div', hProperties: { style: { textAlign: alignMatch[1] } } },
+          data: {
+            hName: 'div',
+            hProperties: {
+              className: `resume-align resume-align-${alignMatch[1]}`,
+              style: { textAlign: alignMatch[1] },
+            },
+          },
           children: []
         };
         pushToCurrent(alignNode);
@@ -441,6 +502,157 @@ const remarkCustomDirectives = () => (tree: RemarkNode) => {
 
     pushToCurrent(node);
   }
+
+  const finalizeColumns = (nodes: RemarkNode[]) => {
+    for (const n of nodes) {
+      if (
+        n.name === 'col' ||
+        (n.data?.hProperties?.className &&
+          String(n.data.hProperties.className).includes('columns-'))
+      ) {
+        // While the single child is a transparent modifier container (no-bullets, compact, align),
+        // unwrap it and merge its class/style onto the column container to prevent layout breakage.
+        while (
+          n.children &&
+          n.children.length === 1 &&
+          n.children[0].name &&
+          ['no-bullets', 'compact', 'align'].includes(n.children[0].name)
+        ) {
+          const child = n.children[0];
+          const childClass = child.data?.hProperties?.className;
+          if (childClass) {
+            n.data = n.data || {};
+            n.data.hProperties = n.data.hProperties || {};
+            n.data.hProperties.className = `${n.data.hProperties.className || ''} ${childClass}`.trim();
+          }
+          if (child.data?.hProperties?.style) {
+            n.data = n.data || {};
+            n.data.hProperties = n.data.hProperties || {};
+            n.data.hProperties.style = {
+              ...(typeof n.data.hProperties.style === 'object' && n.data.hProperties.style ? n.data.hProperties.style : {}),
+              ...(child.data.hProperties.style as object),
+            };
+          }
+          n.children = child.children || [];
+        }
+
+        if (n.children && n.children.length > 0) {
+          n.children = groupColumnItems(n.children);
+        }
+      }
+      if (n.children && n.children.length > 0) {
+        finalizeColumns(n.children);
+      }
+    }
+  };
+
+  const NO_ICON_RE = /::no-icons?::/gi;
+
+  const processNoIconDirectives = (nodes: RemarkNode[]) => {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+
+      // Case 1: Standalone paragraph containing ONLY ::no-icon::, targeting the first link in the next sibling
+      if (node.type === 'paragraph' && Array.isArray(node.children)) {
+        const hasOnlyText = node.children.every((c) => c.type === 'text');
+        const textVal = hasOnlyText
+          ? node.children.map((c) => c.value ?? '').join('').trim()
+          : '';
+        if (/^::no-icons?::$/i.test(textVal) && i + 1 < nodes.length) {
+          const nextNode = nodes[i + 1];
+          let marked = false;
+          const markFirstLink = (n: RemarkNode) => {
+            if (marked) return;
+            if (n.type === 'link' || n.type === 'linkReference') {
+              n.data = n.data || {};
+              n.data.hProperties = n.data.hProperties || {};
+              n.data.hProperties['data-no-icon'] = 'true';
+              marked = true;
+              return;
+            }
+            if (n.children) {
+              for (const child of n.children) {
+                markFirstLink(child);
+                if (marked) break;
+              }
+            }
+          };
+          markFirstLink(nextNode);
+          if (marked) {
+            nodes.splice(i, 1);
+            i--;
+            continue;
+          }
+        }
+      }
+
+      // Case 2: Process children inside this node (heading, paragraph, listItem, container, link, etc.)
+      if (Array.isArray(node.children) && node.children.length > 0) {
+        for (let j = 0; j < node.children.length; j++) {
+          const child = node.children[j];
+
+          // 2a: ::no-icon:: is inside the link's text: [::no-icon::Title](url)
+          if (child.type === 'link' || child.type === 'linkReference') {
+            if (Array.isArray(child.children)) {
+              for (const inner of child.children) {
+                if (inner.type === 'text' && inner.value && NO_ICON_RE.test(inner.value)) {
+                  inner.value = inner.value.replace(NO_ICON_RE, '').trim();
+                  child.data = child.data || {};
+                  child.data.hProperties = child.data.hProperties || {};
+                  child.data.hProperties['data-no-icon'] = 'true';
+                }
+              }
+            }
+          }
+
+          // 2b: ::no-icon:: is in a text node sibling (e.g. before/after link in heading or paragraph)
+          if (child.type === 'text' && child.value && NO_ICON_RE.test(child.value)) {
+            let targetLink: RemarkNode | null = null;
+            if (
+              j + 1 < node.children.length &&
+              (node.children[j + 1].type === 'link' || node.children[j + 1].type === 'linkReference')
+            ) {
+              targetLink = node.children[j + 1];
+            } else if (
+              j > 0 &&
+              (node.children[j - 1].type === 'link' || node.children[j - 1].type === 'linkReference')
+            ) {
+              targetLink = node.children[j - 1];
+            } else {
+              for (let k = j + 1; k < node.children.length; k++) {
+                if (node.children[k].type === 'link' || node.children[k].type === 'linkReference') {
+                  targetLink = node.children[k];
+                  break;
+                }
+              }
+            }
+
+            if (targetLink) {
+              targetLink.data = targetLink.data || {};
+              targetLink.data.hProperties = targetLink.data.hProperties || {};
+              targetLink.data.hProperties['data-no-icon'] = 'true';
+            }
+
+            // Strip ::no-icon:: from text
+            child.value = child.value.replace(NO_ICON_RE, '');
+          }
+        }
+
+        // Filter out empty text nodes if other children exist
+        if (node.children.length > 1) {
+          node.children = node.children.filter(
+            (c) => !(c.type === 'text' && c.value === '')
+          );
+        }
+
+        // Recurse into children
+        processNoIconDirectives(node.children);
+      }
+    }
+  };
+
+  finalizeColumns(newChildren);
+  processNoIconDirectives(newChildren);
   tree.children = newChildren;
 };
 
@@ -463,7 +675,14 @@ const PreviewComponent = ({ markdown, listColumns, template, showLinkIcons = tru
         textDecoration: hideLinkUnderline ? "none" : "underline"
       };
 
-      if (!showLinkIcons || !href) {
+      const isNoIcon =
+        (props as Record<string, unknown>)['data-no-icon'] === 'true' ||
+        (props as Record<string, unknown>)['data-no-icon'] === true ||
+        node?.properties?.dataNoIcon === 'true' ||
+        node?.properties?.dataNoIcon === true ||
+        (node?.properties as Record<string, unknown> | undefined)?.['data-no-icon'] === 'true';
+
+      if (isNoIcon || !showLinkIcons || !href) {
         return <a href={href} {...props} target="_blank" rel="noopener noreferrer" className={linkClass} style={linkStyle}>{children}</a>;
       }
 

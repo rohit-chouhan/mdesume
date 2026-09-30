@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { ResumeStyles } from "@/lib/db";
-import { Palette, Type, AlignLeft, AlignCenter, AlignRight, AlignJustify, LayoutList, LayoutTemplate } from "lucide-react";
+import { ResumeStyles, ResumeMetadata, DEFAULT_METADATA } from "@/lib/db";
+import { Palette, Type, AlignLeft, AlignCenter, AlignRight, AlignJustify, LayoutList, LayoutTemplate, FileText } from "lucide-react";
 import Select from 'react-select';
 import TemplateSelectorModal from "./TemplateSelectorModal";
 
 interface CustomizerProps {
   styles: ResumeStyles;
   onChange: (styles: ResumeStyles) => void;
+  metadata?: ResumeMetadata;
+  onMetadataChange?: (metadata: ResumeMetadata) => void;
+  resumeTitle?: string;
 }
 
 const fontOptions = [
@@ -43,11 +46,34 @@ const formatOptionLabel = ({ value, label }: { value: string; label: string }) =
   </div>
 );
 
-export default function Customizer({ styles, onChange }: CustomizerProps) {
+export default function Customizer({
+  styles,
+  onChange,
+  metadata,
+  onMetadataChange,
+  resumeTitle = '',
+}: CustomizerProps) {
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const handleChange = (key: keyof ResumeStyles, value: string | number | boolean) => {
     onChange({ ...styles, [key]: value });
+  };
+
+  const currentMeta: ResumeMetadata = {
+    title: metadata?.title ?? styles.metadata?.title ?? '',
+    author: metadata?.author ?? styles.metadata?.author ?? '',
+    subject: metadata?.subject ?? styles.metadata?.subject ?? '',
+    keywords: metadata?.keywords ?? styles.metadata?.keywords ?? '',
+    creator: metadata?.creator ?? styles.metadata?.creator ?? 'mdesume',
+  };
+
+  const handleMetaChange = (key: keyof ResumeMetadata, value: string) => {
+    const updatedMeta = { ...currentMeta, [key]: value };
+    if (onMetadataChange) {
+      onMetadataChange(updatedMeta);
+    } else {
+      onChange({ ...styles, metadata: updatedMeta });
+    }
   };
 
   return (
@@ -398,6 +424,88 @@ export default function Customizer({ styles, onChange }: CustomizerProps) {
                 ))}
               </div>
               <p className="text-[10px] text-slate-400 mt-2">Applies column layout to all lists.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Metadata Section */}
+        <section>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2 uppercase tracking-wider">
+            <FileText size={16} className="text-primary" /> PDF Metadata
+          </h3>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+            Customize document properties embedded in the exported PDF and JSON backup for ATS scanners and file indexing.
+          </p>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Document Title
+              </label>
+              <input
+                type="text"
+                value={currentMeta.title}
+                onChange={(e) => handleMetaChange('title', e.target.value)}
+                placeholder={resumeTitle || 'Defaults to resume title'}
+                className="w-full text-xs rounded border border-slate-300 dark:border-slate-600 px-2.5 py-2 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-primary outline-none transition-colors"
+              />
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">
+                Sets the PDF document title & default download name
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Author / Candidate Name
+              </label>
+              <input
+                type="text"
+                value={currentMeta.author}
+                onChange={(e) => handleMetaChange('author', e.target.value)}
+                placeholder="e.g. John Doe"
+                className="w-full text-xs rounded border border-slate-300 dark:border-slate-600 px-2.5 py-2 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-primary outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Subject / Target Role
+              </label>
+              <input
+                type="text"
+                value={currentMeta.subject}
+                onChange={(e) => handleMetaChange('subject', e.target.value)}
+                placeholder="e.g. Senior Full Stack Engineer"
+                className="w-full text-xs rounded border border-slate-300 dark:border-slate-600 px-2.5 py-2 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-primary outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Keywords (ATS & Search)
+              </label>
+              <textarea
+                rows={2}
+                value={currentMeta.keywords}
+                onChange={(e) => handleMetaChange('keywords', e.target.value)}
+                placeholder="e.g. React, TypeScript, Node.js, Next.js"
+                className="w-full text-xs rounded border border-slate-300 dark:border-slate-600 px-2.5 py-2 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-primary outline-none resize-none transition-colors"
+              />
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">
+                Comma-separated skills & keywords
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Creator / Producer
+              </label>
+              <input
+                type="text"
+                value={currentMeta.creator}
+                onChange={(e) => handleMetaChange('creator', e.target.value)}
+                placeholder="mdesume"
+                className="w-full text-xs rounded border border-slate-300 dark:border-slate-600 px-2.5 py-2 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 focus:ring-1 focus:ring-primary outline-none transition-colors"
+              />
             </div>
           </div>
         </section>

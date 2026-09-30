@@ -183,6 +183,186 @@ _Software Engineer (Technology Analyst) | Gurugram_ 05/2024 - Present
       expect(root.querySelector('.columns-2')).toBeInTheDocument()
       expectNoLeakedDirectives(root)
     })
+
+    it('groups heading-based project items into atomic column-item containers to prevent column cropping', () => {
+      const root = renderPreview(`::col-2::
+### SAC/SAP Pilot: Productivity Browser Extension
+Zero-trust client-side browser extension with 15+ utilities.
+[View Details](https://sac-pilot.rohitchouhan.com)
+
+### AI Intelligent Workflow System
+Deployed an NLP assistant in SAP Analytics Cloud.
+[View Details](https://community.sap.com)
+
+::height-80::
+::end-col::`)
+      expect(root.querySelector('.columns-2')).toBeInTheDocument()
+      const items = root.querySelectorAll('.columns-2 .column-item')
+      expect(items).toHaveLength(2)
+      expect(items[0].querySelector('h3')?.textContent).toContain('SAC/SAP Pilot')
+      expect(items[0].querySelector('a')?.textContent).toContain('View Details')
+      expect(items[1].querySelector('h3')?.textContent).toContain('AI Intelligent Workflow System')
+      expect(items[1].querySelector('a')?.textContent).toContain('View Details')
+      expectNoLeakedDirectives(root)
+    })
+
+    it('does not wrap lists in column-item so list items can naturally flow across columns', () => {
+      const root = renderPreview(`::col-2::
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+::end-col::`)
+      expect(root.querySelector('.columns-2')).toBeInTheDocument()
+      expect(root.querySelector('.columns-2 .column-item')).toBeNull()
+      expect(root.querySelectorAll('.columns-2 li')).toHaveLength(4)
+      expectNoLeakedDirectives(root)
+    })
+
+    it('correctly handles the user 7-project multi-column layout without leaking or breaking items', () => {
+      const root = renderPreview(`## Projects
+
+::col-2::
+
+### SAC/SAP Pilot: Productivity Browser Extension
+Zero-trust client-side browser extension with 15+ utilities including 100k+ rows/sec fact data streaming, multi-tenant master data diffing, and dimension hierarchy exploration.
+[View Details](https://sac-pilot.rohitchouhan.com)
+
+### AI Intelligent Workflow System
+
+Deployed an NLP assistant in SAP Analytics Cloud, improving adoption and reducing support dependency from 50% to 30% of total support time.
+
+[View Details](https://community.sap.com/t5/technology-blog-posts-by-members/askbot-ai-the-ultimate-ai-powered-bot-for-sap-analytics-cloud/ba-p/14354194)
+
+### LLM (AI) System
+
+Designed a customizable AI chat widget for SAP Analytics Cloud with configurable API integration, model selection, max tokens, temperature, and completion settings, serving 400+ daily active users.
+
+[View Details](https://community.sap.com/t5/technology-blog-posts-by-members/chatgpt-meets-sap-analytics-cloud-a-developer-s-guide-to-chatgpt-custom/ba-p/14149503)
+
+### Advanced Configurable Form Framework
+
+Created an adaptive form builder widget for SAP Analytics Cloud, reducing form creation time by 85% and supporting 300+ daily active users.
+
+[View Details](https://community.sap.com/t5/technology-blog-posts-by-members/introducing-formflex-the-ultimate-dynamic-form-builder-for-sap-analytics/ba-p/14333443)
+
+### SAP Analytics Cloud Code Generation Engine
+
+React tool that turns natural-language input into SAC scripting code, used by 1k+ non-technical users.
+
+[Try It Live](https://sacgencode.js.org)
+
+### WhatsApp SDK: Business API Integration Framework
+
+Cross-platform Flutter SDK for WhatsApp Business API integration.
+
+[View Details](https://pub.dev/packages/whatsapp)
+
+### 15+ Reusable SAP Custom Widgets
+
+Library of reusable widgets for scalable SAP analytics UI development.
+
+[View Collection](https://sap-custom-widget.rohitchouhan.com/)
+
+::height-80::
+::end-col::`)
+
+      expect(root.querySelector('h2')?.textContent).toContain('Projects')
+      const colContainer = root.querySelector('.columns-2')
+      expect(colContainer).toBeInTheDocument()
+
+      const items = colContainer?.querySelectorAll('.column-item')
+      expect(items).toHaveLength(7)
+
+      // Ensure item 4 (Advanced Configurable Form Framework) is encapsulated as a single item with its link
+      expect(items?.[3].querySelector('h3')?.textContent).toContain('Advanced Configurable Form Framework')
+      expect(items?.[3].textContent).toContain('supporting 300+ daily active users.')
+      expect(items?.[3].querySelector('a')?.textContent).toContain('View Details')
+
+      // Ensure item 7 (15+ Reusable SAP Custom Widgets) is encapsulated as a single item with its link
+      expect(items?.[6].querySelector('h3')?.textContent).toContain('15+ Reusable SAP Custom Widgets')
+      expect(items?.[6].querySelector('a')?.textContent).toContain('View Collection')
+
+      // Ensure spacer exists and is placed inside colContainer outside the item
+      const spacer = colContainer?.querySelector('div[style*="height: 80px"], div[style*="height:80px"]')
+      expect(spacer).toBeInTheDocument()
+
+      expectNoLeakedDirectives(root)
+    })
+  })
+
+  describe('::no-icon::', () => {
+    const renderWithIcons = (markdown: string) => {
+      const { container } = render(
+        <Preview markdown={markdown} listColumns={1} template="classic" showLinkIcons={true} hideLinkUnderline />
+      )
+      return container.querySelector('.resume-preview-content') as HTMLElement
+    }
+
+    it('suppresses icon for a link inside a heading without leaking directive symbol', () => {
+      const root = renderWithIcons(`### ::no-icon::[WhatsApp SDK: Business API Integration Framework](https://pub.dev/packages/whatsapp)`)
+      const heading = root.querySelector('h3')
+      expect(heading).toBeInTheDocument()
+      expect(heading?.textContent).toBe('WhatsApp SDK: Business API Integration Framework')
+      expect(heading?.textContent).not.toContain('::no-icon::')
+
+      const link = heading?.querySelector('a')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', 'https://pub.dev/packages/whatsapp')
+      expect(link?.querySelector('svg')).toBeNull()
+      expectNoLeakedDirectives(root)
+    })
+
+    it('suppresses icon only for the specified link while retaining icons on other links', () => {
+      const root = renderWithIcons(`::no-icon::[Clean Link](https://example.com)
+
+[GitHub Link](https://github.com/rohit)`)
+
+      const links = root.querySelectorAll('a')
+      expect(links).toHaveLength(2)
+
+      // First link (with ::no-icon::) has no svg icon
+      expect(links[0].textContent).toBe('Clean Link')
+      expect(links[0].querySelector('svg')).toBeNull()
+
+      // Second link (normal) has an svg icon (GitHub icon)
+      expect(links[1].textContent).toBe('GitHub Link')
+      expect(links[1].querySelector('svg')).not.toBeNull()
+      expectNoLeakedDirectives(root)
+    })
+
+    it('handles ::no-icon:: placed inside link text [::no-icon::Title](url)', () => {
+      const root = renderWithIcons(`[::no-icon::WhatsApp SDK](https://pub.dev/packages/whatsapp)`)
+      const link = root.querySelector('a')
+      expect(link).toBeInTheDocument()
+      expect(link?.textContent).toBe('WhatsApp SDK')
+      expect(link?.querySelector('svg')).toBeNull()
+      expectNoLeakedDirectives(root)
+    })
+
+    it('handles ::no-icon:: on a standalone line before a link', () => {
+      const root = renderWithIcons(`::no-icon::
+[View Details](https://sac-pilot.rohitchouhan.com)`)
+      const link = root.querySelector('a')
+      expect(link).toBeInTheDocument()
+      expect(link?.textContent).toBe('View Details')
+      expect(link?.querySelector('svg')).toBeNull()
+      expectNoLeakedDirectives(root)
+    })
+
+    it('works inside multi-column ::col-2:: layouts', () => {
+      const root = renderWithIcons(`::col-2::
+### ::no-icon::[WhatsApp SDK](https://pub.dev/packages/whatsapp)
+Cross-platform Flutter SDK.
+::end-col::`)
+      const col = root.querySelector('.columns-2')
+      expect(col).toBeInTheDocument()
+      const link = col?.querySelector('h3 a')
+      expect(link).toBeInTheDocument()
+      expect(link?.textContent).toBe('WhatsApp SDK')
+      expect(link?.querySelector('svg')).toBeNull()
+      expectNoLeakedDirectives(root)
+    })
   })
 
   describe('::align-(left|center|right|justify):: / ::end-align::', () => {
@@ -192,6 +372,7 @@ Right aligned text
 ::end-align::`)
       const align = root.querySelector('[style*="text-align: right"], [style*="text-align:right"]')
       expect(align).toBeInTheDocument()
+      expect(align).toHaveClass('resume-align', 'resume-align-right')
       expectNoLeakedDirectives(root)
     })
 
@@ -201,6 +382,7 @@ Centered
 ::end-align::`)
       const align = root.querySelector('[style*="text-align: center"], [style*="text-align:center"]')
       expect(align).toBeInTheDocument()
+      expect(align).toHaveClass('resume-align', 'resume-align-center')
       expectNoLeakedDirectives(root)
     })
 
@@ -413,6 +595,82 @@ Still centered? No — alignment should stop.
       expect(root.textContent).toContain('double :: colons')
       expect(root.querySelector('.columns-2')).not.toBeInTheDocument()
       expect(root.querySelector('.resume-row')).not.toBeInTheDocument()
+    })
+
+    it('renders col-2 with no-bullets and inverted end tags properly', () => {
+      const markdown = `
+## Skills
+
+::col-2::
+::no-bullets::
+- **Languages**: JavaScript (ES2023), TypeScript, Python, Java, SQL, PHP
+- **Backend**: Node.js, Express.js, REST APIs, GraphQL, Microservices
+- **Frontend**: React 18, Next.js, Angular, HTML5, CSS3, SCSS
+- **Databases**: PostgreSQL, MySQL, MongoDB, SQL
+- **Cloud & DevOps**: GitHub Actions, CI/CD, GCP, Azure, Firebase
+- **AI & Machine Learning**: OpenAI API, LLM Integration
+- **Software Engineering**: Distributed Systems, System Design
+::end-col::
+::end-no-bullets::
+
+## Projects
+
+::col-2::
+
+### ::no-icon::[SAC/SAP Pilot: Productivity Browser Extension](https://sac-pilot.rohitchouhan.com)
+Zero-trust client-side browser extension.
+
+### [AI Intelligent Workflow System](https://community.sap.com/example)
+Deployed an NLP assistant.
+::end-col::
+      `
+      const root = renderPreview(markdown)
+      expectNoLeakedDirectives(root)
+
+      const columns = root.querySelectorAll('.columns-2')
+      expect(columns.length).toBe(2)
+
+      // First column section (Skills): has merged resume-no-bullets
+      const skillsCol = columns[0]
+      expect(skillsCol).toHaveClass('resume-no-bullets')
+      const ul = skillsCol.querySelector('ul')
+      expect(ul).toBeInTheDocument()
+      expect(skillsCol.querySelectorAll('li').length).toBe(7)
+
+      // Second column section (Projects): grouped into column-items
+      const projectsCol = columns[1]
+      const items = projectsCol.querySelectorAll('.column-item')
+      expect(items.length).toBe(2)
+
+      // First link has no-icon applied
+      const firstLink = items[0].querySelector('a')
+      expect(firstLink).toBeInTheDocument()
+      expect(firstLink?.getAttribute('data-no-icon')).toBe('true')
+      expect(firstLink?.querySelector('svg')).toBeNull()
+
+      // Second link retains icon
+      const secondLink = items[1].querySelector('a')
+      expect(secondLink).toBeInTheDocument()
+      expect(secondLink?.getAttribute('data-no-icon')).toBeNull()
+    })
+
+    it('unwraps nested modifiers like col-2 > compact > no-bullets', () => {
+      const root = renderPreview(`
+::col-2::
+::compact::
+::no-bullets::
+- Item 1
+- Item 2
+::end-no-bullets::
+::end-compact::
+::end-col::
+      `)
+      expectNoLeakedDirectives(root)
+      const col = root.querySelector('.columns-2')
+      expect(col).toBeInTheDocument()
+      expect(col).toHaveClass('resume-compact')
+      expect(col).toHaveClass('resume-no-bullets')
+      expect(col?.querySelectorAll('li').length).toBe(2)
     })
   })
 })

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Columns3, AlignCenter, ArrowDownToLine, ExternalLink, FileText, X, Check } from "lucide-react";
+import { ArrowLeft, BookOpen, Columns3, AlignCenter, ArrowDownToLine, ExternalLink, FileText, X, Check, Globe, Link2Off } from "lucide-react";
 import GuidePreview from "@/components/GuidePreview";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -632,6 +632,40 @@ Software Engineer`}
                             <div className="text-sm flex items-center gap-3">
                                 <div className="resume-qr">https://example.com</div>
                                 <a href="https://example.com" className="text-indigo-600 underline">Portfolio</a>
+                            </div>
+                        }
+                    />
+
+                    <Section
+                        icon={<Link2Off size={20} />}
+                        title="Link Without Icon"
+                        symbol="::no-icon::[Link](url)"
+                        description={
+                            <>
+                                Prefix or wrap any link with <code className="font-mono">::no-icon::</code> in a
+                                heading, paragraph, or list item to suppress the automated platform icon (Globe, GitHub,
+                                LinkedIn, etc.). Perfect for clean project titles or plain link text.
+                            </>
+                        }
+                        withoutCode={`### [WhatsApp SDK: Business API Integration Framework](https://pub.dev/packages/whatsapp)`}
+                        withCode={`### ::no-icon::[WhatsApp SDK: Business API Integration Framework](https://pub.dev/packages/whatsapp)`}
+                        withoutNode={
+                            <div className="text-left text-sm">
+                                <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                                    <span className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                                        <Globe size={12} className="shrink-0 mt-[1px] text-slate-500" />
+                                        <span>WhatsApp SDK: Business API Integration Framework</span>
+                                    </span>
+                                </h3>
+                            </div>
+                        }
+                        withNode={
+                            <div className="text-left text-sm">
+                                <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                                    <span className="text-blue-600 dark:text-blue-400">
+                                        WhatsApp SDK: Business API Integration Framework
+                                    </span>
+                                </h3>
                             </div>
                         }
                     />

@@ -72,6 +72,16 @@ function BuilderContent() {
     if (!data.styles.pageSize) {
       data.styles.pageSize = 'A4';
     }
+    // Ensure metadata exists
+    if (!data.metadata) {
+      data.metadata = {
+        title: data.title || '',
+        author: '',
+        subject: '',
+        keywords: '',
+        creator: 'mdesume',
+      };
+    }
     setResume(data);
   }, [router]);
 
@@ -181,9 +191,84 @@ function BuilderContent() {
     return () => observer.disconnect();
   }, [resume?.styles.pageSize]);
 
+  // Inject document metadata into the print iframe so browser PDF generator includes it
+  useEffect(() => {
+    if (!resume?.metadata) return;
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of Array.from(mutation.addedNodes)) {
+          if (node instanceof HTMLIFrameElement && (node.id === 'printWindow' || node.name === 'printWindow')) {
+            const iframe = node;
+            const injectMeta = () => {
+              try {
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (doc && doc.head) {
+                  const meta = resume.metadata;
+                  if (!meta) return;
+                  const addMetaTag = (name: string, content?: string) => {
+                    if (!content) return;
+                    let m = doc.head.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
+                    if (!m) {
+                      m = doc.createElement('meta');
+                      m.name = name;
+                      doc.head.appendChild(m);
+                    }
+                    m.content = content;
+                  };
+                  addMetaTag('author', meta.author);
+                  addMetaTag('description', meta.subject);
+                  addMetaTag('subject', meta.subject);
+                  addMetaTag('keywords', meta.keywords);
+                  addMetaTag('creator', meta.creator || 'mdesume');
+                }
+              } catch {
+                // cross-origin protection if any, ignore
+              }
+            };
+
+            injectMeta();
+            iframe.addEventListener('load', injectMeta);
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true });
+    return () => observer.disconnect();
+  }, [resume?.metadata]);
+
   const handleExportPDF = useReactToPrint({
     contentRef: previewRef,
-    documentTitle: resume ? resume.title.replace(/\s+/g, '_') : 'Resume',
+    documentTitle: () => {
+      const metaTitle = resume?.metadata?.title?.trim();
+      if (metaTitle) return metaTitle;
+      return resume ? resume.title.replace(/\s+/g, '_') : 'Resume';
+    },
+    onBeforePrint: async () => {
+      if (resume?.metadata) {
+        const meta = resume.metadata;
+        const effectiveTitle = meta.title?.trim() || resume.title;
+        if (effectiveTitle) {
+          document.title = effectiveTitle;
+        }
+        const setMeta = (name: string, content?: string) => {
+          if (!content) return;
+          let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
+          if (!el) {
+            el = document.createElement('meta');
+            el.name = name;
+            document.head.appendChild(el);
+          }
+          el.content = content;
+        };
+        setMeta('author', meta.author);
+        setMeta('description', meta.subject);
+        setMeta('subject', meta.subject);
+        setMeta('keywords', meta.keywords);
+        setMeta('creator', meta.creator || 'mdesume');
+      }
+    },
   });
 
   const handleExportMD = () => {
@@ -199,13 +284,15 @@ function BuilderContent() {
 
   const handleExportBackup = async () => {
     if (!resume) return;
+    await flushSave();
     const backup = await db.exportResume(resume.id);
     if (!backup) return;
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${resume.title.replace(/\s+/g, "_")}.mdesume.json`;
+    const downloadTitle = resume.metadata?.title?.trim() || resume.title;
+    a.download = `${downloadTitle.replace(/\s+/g, "_")}.mdesume.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -393,6 +480,9 @@ function BuilderContent() {
             <Customizer
               styles={resume.styles}
               onChange={(styles) => updateResume({ styles })}
+              metadata={resume.metadata}
+              onMetadataChange={(metadata) => updateResume({ metadata })}
+              resumeTitle={resume.title}
             />
           </div>
         )}
