@@ -58,7 +58,8 @@ const FONT_OPTIONS = [
 ];
 
 const PADDING_OPTIONS = [
-  { value: "1.25rem", label: "Compact" },
+  { value: "1rem", label: "Compact" },
+  { value: "1.25rem", label: "Snug" },
   { value: "2rem", label: "Normal" },
   { value: "2.5rem", label: "Roomy" },
   { value: "3rem", label: "Wide" },
@@ -328,6 +329,7 @@ export default function Customizer({
                 value={styles.sectionSpacing}
                 onChange={(event) => set("sectionSpacing", event.target.value)}
               >
+                <option value="0.75rem">Compact</option>
                 <option value="1rem">Tight</option>
                 <option value="1.5rem">Normal</option>
                 <option value="2rem">Airy</option>
@@ -343,6 +345,7 @@ export default function Customizer({
                 value={styles.listSpacing}
                 onChange={(event) => set("listSpacing", event.target.value)}
               >
+                <option value="0">None</option>
                 <option value="0.1rem">Tight</option>
                 <option value="0.25rem">Normal</option>
                 <option value="0.45rem">Airy</option>

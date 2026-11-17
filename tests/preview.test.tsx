@@ -34,7 +34,7 @@ describe("ResumeSheet rendering", () => {
     const sheet = container.querySelector(".resume-doc");
     expect(sheet).toHaveClass("template-tech");
     expect(sheet).toHaveAttribute("data-resume-sheet", "true");
-    expect((sheet as HTMLElement).style.getPropertyValue("--resume-h1-color")).toBe("#1f2937");
+    expect((sheet as HTMLElement).style.getPropertyValue("--resume-h1-color")).toBe("#306abb");
   });
 
   it("adds multi-column list mode when enabled", () => {

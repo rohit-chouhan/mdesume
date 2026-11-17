@@ -24,7 +24,7 @@ When asked to write, improve, or format a resume for mdesume:
 5. Group experience and education roles using \`::row::\` ... \`::end-row::\` with title/company on line 1 and dates on line 2.
 6. Use \`::col-2::\` or \`::badges::\` for technical skills and languages.
 7. Use \`::page-break::\` between sections if authoring a multi-page resume.
-8. Default styling recommendations: H1 18pt, H2 12pt, H3 11pt, Body 10pt, Line Height 1.2, Theme: Classic.
+8. Default styling recommendations: H1 23pt, H2 14pt, H3 12pt, Body 10pt, Line Height 1.2, Font: Cambria, Theme: Compact ATS.
 
 ---
 

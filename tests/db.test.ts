@@ -6,12 +6,30 @@ describe("normalizeStyles", () => {
   it("fills in every missing key with updated defaults", () => {
     const styles = normalizeStyles(undefined);
     expect(styles).toEqual(DEFAULT_STYLES);
-    expect(styles.h1Size).toBe("18");
-    expect(styles.h2Size).toBe("12");
-    expect(styles.h3Size).toBe("11");
+    expect(styles.h1Color).toBe("#306abb");
+    expect(styles.h2Color).toBe("#306abb");
+    expect(styles.h3Color).toBe("#306abb");
+    expect(styles.textColor).toBe("#000000");
+    expect(styles.linkColor).toBe("#0b4ca8");
+    expect(styles.iconColor).toBe("#64748b");
+    expect(styles.h1Size).toBe("23");
+    expect(styles.h2Size).toBe("14");
+    expect(styles.h3Size).toBe("12");
     expect(styles.textSize).toBe("10");
+    expect(styles.fontFamily).toBe("'Cambria', serif");
+    expect(styles.padding).toBe("1rem");
+    expect(styles.margin).toBe("0.5rem");
     expect(styles.lineHeight).toBe("1.2");
-    expect(styles.template).toBe("classic");
+    expect(styles.textAlign).toBe("justify");
+    expect(styles.listColumns).toBe(1);
+    expect(styles.pageSize).toBe("A4");
+    expect(styles.template).toBe("compact");
+    expect(styles.listSpacing).toBe("0");
+    expect(styles.sectionSpacing).toBe("0.75rem");
+    expect(styles.exportFormat).toBe("single");
+    expect(styles.pdfScale).toBe(2);
+    expect(styles.showLinkIcons).toBe(true);
+    expect(styles.hideLinkUnderline).toBe(false);
   });
 
   it("migrates the legacy split export format", () => {

@@ -25,5 +25,5 @@ mdesume transforms standard GitHub Flavored Markdown and intuitive layout symbol
   - `::icon[name]::`: Inline glyphs (mail, phone, globe, github, linkedin, etc.)
   - `::avatar[url]::`: Floated circular profile picture
   - `::qr[url]::`: Embedded local vector QR code
-- **Defaults**: H1 18pt, H2 12pt, H3 11pt, Body text 10pt, Line height 1.2, Default Theme Classic.
+- **Defaults**: H1 23pt, H2 14pt, H3 12pt, Body text 10pt, Line height 1.2, Default Font Cambria, Default Theme Compact ATS.
 - **Local-first**: Stored in browser IndexedDB. Real vector PDF export via native browser print.

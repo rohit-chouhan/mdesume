@@ -139,10 +139,10 @@ export const THEMES: ThemeDefinition[] = [
 
 export const TEMPLATE_IDS = THEMES.map((theme) => theme.id);
 
-export const DEFAULT_TEMPLATE = "classic";
+export const DEFAULT_TEMPLATE = "compact";
 
 export function getTheme(id: string | undefined): ThemeDefinition {
-  return THEMES.find((theme) => theme.id === id) ?? THEMES[0];
+  return THEMES.find((theme) => theme.id === id) ?? THEMES.find((theme) => theme.id === DEFAULT_TEMPLATE) ?? THEMES[0];
 }
 
 export function isTemplateId(id: string | undefined): id is string {

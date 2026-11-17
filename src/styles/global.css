@@ -352,26 +352,26 @@
    ========================================================================== */
 
 .resume-doc {
-  --resume-h1-color: #1f2937;
-  --resume-h2-color: #374151;
-  --resume-h3-color: #4b5563;
-  --resume-text-color: #4b5563;
-  --resume-link-color: #2563eb;
+  --resume-h1-color: #306abb;
+  --resume-h2-color: #306abb;
+  --resume-h3-color: #306abb;
+  --resume-text-color: #000000;
+  --resume-link-color: #0b4ca8;
   --resume-icon-color: #64748b;
-  --resume-h1-size: 18pt;
-  --resume-h2-size: 12pt;
-  --resume-h3-size: 11pt;
+  --resume-h1-size: 23pt;
+  --resume-h2-size: 14pt;
+  --resume-h3-size: 12pt;
   --resume-text-size: 10pt;
-  --resume-font: "Inter", sans-serif;
-  --resume-padding: 2rem;
-  --resume-margin: 0.75rem;
+  --resume-font: "Cambria", serif;
+  --resume-padding: 1rem;
+  --resume-margin: 0.5rem;
   --resume-line-height: 1.2;
   --resume-list-cols: 1;
-  --resume-list-spacing: 0.25rem;
-  --resume-section-spacing: 1.5rem;
+  --resume-list-spacing: 0;
+  --resume-section-spacing: 0.75rem;
   --resume-width: 210mm;
   --resume-height: 297mm;
-  --resume-text-align: left;
+  --resume-text-align: justify;
 
   box-sizing: border-box;
   width: var(--resume-width);
