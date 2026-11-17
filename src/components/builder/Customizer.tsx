@@ -3,6 +3,7 @@ import {
   AlignJustify,
   AlignLeft,
   AlignRight,
+  Check,
   ChevronDown,
   FileJson,
   FileText,
@@ -10,11 +11,20 @@ import {
   Link2,
   Palette,
   Printer,
+  RotateCcw,
+  Shuffle,
   Type,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import type { ExportLayout, ResumeMetadata, ResumeStyles } from "@/lib/db";
+import { DEFAULT_STYLES, type ExportLayout, type ResumeMetadata, type ResumeStyles } from "@/lib/db";
 import { getTheme, THEMES } from "@/lib/themes";
+import {
+  COLOR_PATTERNS,
+  generateRandomColorPattern,
+  getThemeColorPattern,
+  isPatternActive,
+  type ColorPattern,
+} from "@/lib/colorPatterns";
 
 const FONT_OPTIONS = [
   // Sans-serif
@@ -162,9 +172,85 @@ export default function Customizer({
 }: CustomizerProps) {
   const theme = getTheme(styles.template);
 
+  // User's custom / base colors (what user has configured or given for heading and text)
+  const [userColors, setUserColors] = useState(() => ({
+    h1Color: styles.h1Color || DEFAULT_STYLES.h1Color,
+    h2Color: styles.h2Color || DEFAULT_STYLES.h2Color,
+    h3Color: styles.h3Color || DEFAULT_STYLES.h3Color,
+    textColor: styles.textColor || DEFAULT_STYLES.textColor,
+    linkColor: styles.linkColor || DEFAULT_STYLES.linkColor,
+    iconColor: styles.iconColor || DEFAULT_STYLES.iconColor,
+  }));
+
   const set = <K extends keyof ResumeStyles>(key: K, value: ResumeStyles[K]) => {
     onChange({ ...styles, [key]: value });
+    if (
+      key === "h1Color" ||
+      key === "h2Color" ||
+      key === "h3Color" ||
+      key === "textColor" ||
+      key === "linkColor" ||
+      key === "iconColor"
+    ) {
+      setUserColors((prev) => ({ ...prev, [key]: value }));
+    }
   };
+
+  const applyPattern = (pattern: ColorPattern) => {
+    onChange({
+      ...styles,
+      h1Color: pattern.h1Color,
+      h2Color: pattern.h2Color,
+      h3Color: pattern.h3Color,
+      textColor: pattern.textColor,
+      linkColor: pattern.linkColor,
+      iconColor: pattern.iconColor,
+    });
+  };
+
+  const applyDefault = () => {
+    onChange({
+      ...styles,
+      h1Color: userColors.h1Color,
+      h2Color: userColors.h2Color,
+      h3Color: userColors.h3Color,
+      textColor: userColors.textColor,
+      linkColor: userColors.linkColor,
+      iconColor: userColors.iconColor,
+    });
+  };
+
+  const resetToFactoryDefaults = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    const factory = {
+      h1Color: DEFAULT_STYLES.h1Color,
+      h2Color: DEFAULT_STYLES.h2Color,
+      h3Color: DEFAULT_STYLES.h3Color,
+      textColor: DEFAULT_STYLES.textColor,
+      linkColor: DEFAULT_STYLES.linkColor,
+      iconColor: DEFAULT_STYLES.iconColor,
+    };
+    setUserColors(factory);
+    onChange({ ...styles, ...factory });
+  };
+
+  const applyRandom = () => {
+    const randomPattern = generateRandomColorPattern(styles.h1Color);
+    applyPattern(randomPattern);
+  };
+
+  const themePattern = getThemeColorPattern(theme);
+
+  const isDefaultActive =
+    styles.h1Color.toLowerCase() === userColors.h1Color.toLowerCase() &&
+    styles.textColor.toLowerCase() === userColors.textColor.toLowerCase();
+
+  const isThemeActive =
+    !isDefaultActive && isPatternActive(themePattern, styles);
+
+  const hasCustomizedDefault =
+    userColors.h1Color.toLowerCase() !== DEFAULT_STYLES.h1Color.toLowerCase() ||
+    userColors.textColor.toLowerCase() !== DEFAULT_STYLES.textColor.toLowerCase();
 
   const setMeta = (key: keyof ResumeMetadata, value: string) => {
     onMetadataChange({ ...metadata, [key]: value });
@@ -185,7 +271,7 @@ export default function Customizer({
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <Section title="Design" icon={<Palette size={15} />}>
+        <Section title="Design" icon={<LayoutTemplate size={15} />}>
           <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
             <div className="flex items-center gap-3">
               <span
@@ -351,6 +437,195 @@ export default function Customizer({
                 <option value="0.45rem">Airy</option>
               </select>
             </div>
+          </div>
+        </Section>
+
+        <Section title="Color patterns" icon={<Palette size={15} />}>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              Palettes & one-click styles
+            </span>
+            <button
+              type="button"
+              onClick={applyRandom}
+              className="btn btn-secondary btn-sm flex items-center gap-1.5 px-2.5 py-1 text-xs"
+              title="Apply a random color scheme"
+              aria-label="Apply random color pattern"
+            >
+              <Shuffle size={13} className="text-brand-600 dark:text-brand-400" />
+              <span>Random</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            {/* Default (as given by user) */}
+            <button
+              type="button"
+              onClick={applyDefault}
+              className={`group relative flex items-center gap-2.5 rounded-lg border p-2 text-left transition-all ${
+                isDefaultActive
+                  ? "border-brand-500 bg-brand-50/80 shadow-xs ring-1 ring-brand-500/30 dark:border-brand-400 dark:bg-slate-800 dark:ring-brand-400/40"
+                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
+              }`}
+              aria-pressed={isDefaultActive}
+              aria-label="Default color pattern"
+              title="Default (as given for heading and text)"
+            >
+              <div className="flex shrink-0 -space-x-1">
+                <span
+                  className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                  style={{ backgroundColor: userColors.h1Color }}
+                  title={`Heading: ${userColors.h1Color}`}
+                />
+                <span
+                  className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                  style={{ backgroundColor: userColors.textColor }}
+                  title={`Text: ${userColors.textColor}`}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <span
+                    className={`truncate text-xs font-semibold ${
+                      isDefaultActive
+                        ? "text-brand-900 dark:text-brand-300"
+                        : "text-slate-900 dark:text-slate-100"
+                    }`}
+                  >
+                    Default
+                  </span>
+                  {isDefaultActive && (
+                    <Check size={12} className="shrink-0 text-brand-600 dark:text-brand-400" />
+                  )}
+                </div>
+                <span
+                  className={`block truncate text-[10px] ${
+                    isDefaultActive
+                      ? "text-brand-700/80 dark:text-brand-400/80"
+                      : "text-slate-400 dark:text-slate-500"
+                  }`}
+                >
+                  As given
+                </span>
+              </div>
+              {hasCustomizedDefault && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={resetToFactoryDefaults}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      resetToFactoryDefaults(event as unknown as React.MouseEvent);
+                    }
+                  }}
+                  className="absolute -top-1.5 -right-1.5 hidden rounded-full bg-slate-200 p-0.5 text-slate-600 hover:bg-slate-300 group-hover:block dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  title="Reset to factory default colors"
+                  aria-label="Reset default colors"
+                >
+                  <RotateCcw size={10} />
+                </span>
+              )}
+            </button>
+
+            {/* Theme Accent (Dynamically matches current template) */}
+            <button
+              type="button"
+              onClick={() => applyPattern(themePattern)}
+              className={`group relative flex items-center gap-2.5 rounded-lg border p-2 text-left transition-all ${
+                isThemeActive
+                  ? "border-brand-500 bg-brand-50/80 shadow-xs ring-1 ring-brand-500/30 dark:border-brand-400 dark:bg-slate-800 dark:ring-brand-400/40"
+                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
+              }`}
+              aria-pressed={isThemeActive}
+              aria-label={`${theme.name} theme color pattern`}
+              title={themePattern.description}
+            >
+              <div className="flex shrink-0 -space-x-1">
+                <span
+                  className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                  style={{ backgroundColor: themePattern.h1Color }}
+                  title={`Heading: ${themePattern.h1Color}`}
+                />
+                <span
+                  className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                  style={{ backgroundColor: themePattern.textColor }}
+                  title={`Text: ${themePattern.textColor}`}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <span
+                    className={`truncate text-xs font-semibold ${
+                      isThemeActive
+                        ? "text-brand-900 dark:text-brand-300"
+                        : "text-slate-900 dark:text-slate-100"
+                    }`}
+                  >
+                    Theme
+                  </span>
+                  {isThemeActive && (
+                    <Check size={12} className="shrink-0 text-brand-600 dark:text-brand-400" />
+                  )}
+                </div>
+                <span
+                  className={`block truncate text-[10px] ${
+                    isThemeActive
+                      ? "text-brand-700/80 dark:text-brand-400/80"
+                      : "text-slate-400 dark:text-slate-500"
+                  }`}
+                >
+                  {theme.name}
+                </span>
+              </div>
+            </button>
+
+            {COLOR_PATTERNS.map((pattern) => {
+              const active = !isDefaultActive && !isThemeActive && isPatternActive(pattern, styles);
+              return (
+                <button
+                  key={pattern.id}
+                  type="button"
+                  onClick={() => applyPattern(pattern)}
+                  className={`flex items-center gap-2.5 rounded-lg border p-2 text-left transition-all ${
+                    active
+                      ? "border-brand-500 bg-brand-50/80 shadow-xs ring-1 ring-brand-500/30 dark:border-brand-400 dark:bg-slate-800 dark:ring-brand-400/40"
+                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
+                  }`}
+                  aria-pressed={active}
+                  aria-label={`${pattern.name} color pattern`}
+                  title={pattern.description || pattern.name}
+                >
+                  <div className="flex shrink-0 -space-x-1">
+                    <span
+                      className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                      style={{ backgroundColor: pattern.h1Color }}
+                      title={`Heading: ${pattern.h1Color}`}
+                    />
+                    <span
+                      className="h-5 w-5 rounded-full border border-white shadow-xs dark:border-slate-800"
+                      style={{ backgroundColor: pattern.textColor }}
+                      title={`Text: ${pattern.textColor}`}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <span
+                        className={`truncate text-xs font-medium ${
+                          active
+                            ? "text-brand-900 dark:text-brand-300"
+                            : "text-slate-900 dark:text-slate-100"
+                        }`}
+                      >
+                        {pattern.name}
+                      </span>
+                      {active && (
+                        <Check size={12} className="shrink-0 text-brand-600 dark:text-brand-400" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </Section>
 

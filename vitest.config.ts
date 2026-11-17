@@ -11,6 +11,7 @@ export default defineConfig({
     include: ["tests/**/*.test.{ts,tsx}"],
     css: false,
     fileParallelism: false,
+    pool: "threads",
   },
   resolve: {
     alias: {

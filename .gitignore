@@ -10,3 +10,6 @@ coverage/
 !.env.example
 mdesume.zip
 mdesume-astro.zip
+graphify.md
+.graphifyignore
+graphify-out/
