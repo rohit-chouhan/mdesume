@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import DashboardApp from "@/components/DashboardApp";
+---
+
+<BaseLayout
+  title="My resumes"
+  description="Your local mdesume resume library. Stored in your browser with IndexedDB — no account needed."
+  noindex
+>
+  <DashboardApp client:load />
+</BaseLayout>

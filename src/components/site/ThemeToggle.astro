@@ -1,0 +1,18 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<button type="button" data-theme-toggle class="btn-icon" aria-label="Toggle colour theme" title="Toggle colour theme">
+  <Icon name="sun" size={18} class="hidden dark:block" />
+  <Icon name="moon" size={18} class="block dark:hidden" />
+</button>
+
+<script>
+  import { toggleTheme } from "@/lib/theme";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest("[data-theme-toggle]")) return;
+    toggleTheme();
+  });
+</script>

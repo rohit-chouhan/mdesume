@@ -1,121 +1,95 @@
-# mdesume Resume Format
+# mdesume resume format
 
-This document is the **canonical schema** for writing a resume in **mdesume**.
-It explains the supported Markdown, the custom layout symbols, and ends with a
-**sample resume** you can copy and edit.
+This is the canonical schema for a resume in **mdesume**. Everything is plain
+GitHub-flavoured Markdown plus a few `::symbol::` directives. No HTML is required.
 
-> Everything is plain Markdown plus a few `::symbol::` directives. No HTML is
-> required. The sample at the bottom is fictional and meant to be replaced.
+A complete sample resume is at the bottom.
 
 ---
 
-## 1. Top of the document (the header)
+## 1. The header
 
-The first lines become the resume header. Use this order:
-
-```markdown
-# Your Name
-
-### _Professional Title | Specialty_
-
-[email@example.com](mailto:email@example.com) · +1 555 0100 · City, Country
-
-[website.com](https://website.com) · [linkedin.com/in/you](https://linkedin.com/in/you) · [github.com/you](https://github.com/you)
-```
-
-- `# Name` — the main heading (your name).
-- `### _Title_` — an italic subtitle for your role/specialty.
-- A line of `·` separated contact links (email, phone, location).
-- A line of `·` separated profile/social links (website, LinkedIn, GitHub…).
-
-Links use standard Markdown `[label](url)`; the app turns them into clean
-text/icon links in the preview.
-
-## 2. Standard Markdown
-
-mdesume supports standard [GitHub-Flavored Markdown](https://github.github.com/gfm/):
-
-- `## Section` — top-level sections (Experience, Skills, Education…).
-- `### Sub-heading` — job title, project name, degree, etc.
-- `**bold**`, `_italic_`, `` `code` ``.
-- `- bullet` lists (supports a **global column count** set in the Customizer).
-- `1. ordered` lists.
-- `[text](url)` links and `[text](url "title")`.
-- `> blockquotes` for quotes/callouts.
-- Horizontal rules `---` to separate blocks.
-
-## 3. Custom layout symbols
-
-These are mdesume-specific directives. Each opening symbol has a matching
-closing symbol. **Headings (`#`/`##`) automatically close any open layout
-block**, so you rarely need the closing tag.
-
-### Columns — `::col-N::` … `::end-col::`
-
-Split a block into **N** side-by-side columns (N = `2`, `3`, or `4`). Great for
-skills, languages, or compact lists.
-
-```markdown
-::col-2::
-- **Languages**: TypeScript, Python
-- **Backend**: Node.js, REST APIs
-- **Frontend**: React, Next.js
-- **DevOps**: Docker, CI/CD
-::end-col::
-```
-
-### Alignment — `::align-left|center|right|justify::` … `::end-align::`
-
-Align the text inside a block.
+The first heading is your name. Every theme styles it specially, and the usual
+heading gap is removed so the name and subtitle read as one block.
 
 ```markdown
 ::align-center::
-### _Available for remote work worldwide_
+# Alex Morgan
+
+### _Senior Software Engineer | Web & Cloud_
+
+[alex@example.com](mailto:alex@example.com) · +1 555 0142 · Berlin, Germany
+
+[alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan)
 ::end-align::
 ```
 
-### Badges / skill pills — `::badges::` … `::end-badges::`
+- `# Name` — the document title.
+- `### _Title_` — an italic subtitle; a bold paragraph also works.
+- Contact and profile links can be separated with `·`, `|` or spaces.
+- Platform icons are added automatically for GitHub, LinkedIn, LeetCode, `mailto:` and web links.
 
-Render a list of comma- or newline-separated items as styled "pills".
+## 2. Standard Markdown
 
-```markdown
-::badges::
-TypeScript, React, Node.js, GraphQL, Docker, CI/CD
-::end-badges::
-```
+- `## Section` — top-level sections.
+- `### Sub-heading` — a role, project or degree.
+- `**bold**`, `_italic_`, `` `code` ``.
+- `- bullet` and `1. ordered` lists (a global column count can be set in the customiser).
+- `[text](url)` links.
+- `> blockquotes`, `---` horizontal rules and GFM tables.
 
-### Links without icons — `::no-icon::[Title](url)`
+## 3. Layout symbols
 
-Suppress the automated platform icon (Globe, GitHub, LinkedIn, etc.) for any specific link in a heading, paragraph, or list item:
+Symbols must be on their own line unless marked **inline**. Opening symbols close
+automatically at the next top-level `##` heading or at the end of the document.
 
-```markdown
-### ::no-icon::[WhatsApp SDK: Business API Integration Framework](https://pub.dev/packages/whatsapp)
-```
+| Symbol | Purpose |
+| ------ | ------- |
+| `::col-2:: … ::end-col::` | Two to four balanced columns (`::col-3::`, `::col-4::`). Aliases: `::cols-2::`, `::columns-2::`, `::end-columns::`. |
+| `::row:: … ::end-row::` | Title on the left, date on the right. A trailing date is detected automatically. |
+| `::align-center:: … ::end-align::` | Align left, centre, right or justify. Variants: `::align-left::`, `::align-right::`, `::align-justify::`. |
+| `::badges:: … ::end-badges::` | Comma, middot or newline-separated items as pills. |
+| `::note:: … ::end-note::` | Italic callout with a tinted background. |
+| `::no-bullets:: … ::end-no-bullets::` | Lists without markers. |
+| `::compact:: … ::end-compact::` | Tighten vertical spacing inside the block. |
+| `::height-24::` | Exact spacer in pixels (0–400). |
+| `::page-break::` | New page in paginated PDFs; ignored by single-page exports. |
+| `::divider::` | Subtle theme-coloured horizontal rule. |
 
-### Spacing
+### Inline symbols
 
-Use blank lines for paragraph spacing as normal. Avoid raw `<br>`; the renderer
-handles line breaks within paragraphs.
+| Symbol | Purpose |
+| ------ | ------- |
+| `::rating-4::` | Five proficiency bars with N filled (0–5). |
+| `::badge[Remote]::` | A single pill. Aliases: `::pill[…]::`, `::tag[…]::`. |
+| `::icon[mail]::` | Inline glyph: mail, phone, globe, link, location, github, linkedin, code, star, check, calendar, clock, download, arrow, dot, diamond, spark. |
+| `::br::` | Hard line break inside a paragraph. |
+| `::no-icon::[Title](url)` | Suppress the automatic icon for one link. Also works inside the brackets and on the line above. |
+
+### Media
+
+| Symbol | Purpose |
+| ------ | ------- |
+| `::avatar[https://…/photo.jpg]::` | Circular profile photo floated beside the header. |
+| `::qr[https://example.com]::` | Real QR code generated locally and embedded in the PDF. |
 
 ## 4. Suggested section order
 
-1. Header (name, title, contacts)
-2. `## Summary` — 2–4 sentence pitch
-3. `## Work Experience` — most recent first
-4. `## Skills` — use `::col-2::` or `::badges::`
+1. Header
+2. `## Summary`
+3. `## Technical Skills` — use `::col-2::` or `::badges::`
+4. `## Work Experience`
 5. `## Projects`
 6. `## Education`
 7. `## Certifications`
 8. `## Languages`
 
----
-
 ## 5. Sample resume
 
-Copy everything below into the editor and replace the placeholders with your
-own details.
+Copy everything below into the editor and replace the details.
 
 ```markdown
+::align-center::
 # Alex Morgan
 
 ### _Senior Software Engineer | Web & Cloud_
@@ -123,17 +97,29 @@ own details.
 [alex.morgan@example.com](mailto:alex.morgan@example.com) · +1 555 0142 · Berlin, Germany
 
 [alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan) · [github.com/alexmorgan](https://github.com/alexmorgan)
+::end-align::
 
 ## Summary
 
-Senior Software Engineer with 8+ years building reliable web platforms and
-cloud services using TypeScript, Node.js, and React. Shipped products serving
-millions of requests per day with a focus on performance, observability, and
-developer experience.
+Senior Software Engineer with 8+ years building reliable web platforms and cloud services using TypeScript, Node.js and React. Shipped products serving millions of requests per day with a focus on performance, observability and developer experience.
+
+## Technical Skills
+
+::col-2::
+- **Languages:** TypeScript, Python, Go, SQL
+- **Backend:** Node.js, FastAPI, GraphQL, REST APIs, Microservices
+- **Frontend:** React, Next.js, Tailwind CSS, TypeScript
+- **Cloud & DevOps:** AWS, Docker, Kubernetes, CI/CD, Terraform
+- **Databases:** PostgreSQL, Redis, DynamoDB
+- **Practices:** TDD, Code Review, System Design, Observability
+::end-col::
 
 ## Work Experience
 
-### Northwind Systems — Senior Software Engineer (01/2022 - Present)
+::row::
+**Northwind Systems** — Senior Software Engineer
+May 2022 – Present
+::end-row::
 
 _Berlin, Germany_
 
@@ -143,69 +129,49 @@ _Berlin, Germany_
 - Built a shared component library adopted by 6 teams, reducing duplicate UI code by 60%.
 - Introduced end-to-end testing, lowering production incidents by 35%.
 
-### Bright Labs — Software Engineer (06/2019 - 12/2021)
+::row::
+**Bright Labs** — Software Engineer
+Jun 2019 – Dec 2021
+::end-row::
 
 _Remote_
 
-**Tech Stack:** _Python, FastAPI, React, PostgreSQL, Docker_
-
 - Developed REST APIs powering a B2B analytics dashboard used by 200+ customers.
 - Containerized the stack with Docker and authored CI pipelines reducing release time by 50%.
-
-## Skills
-
-::col-2::
-- **Languages**: TypeScript, Python, Go, SQL
-- **Backend**: Node.js, FastAPI, GraphQL, REST APIs, Microservices
-- **Frontend**: React, Next.js, Tailwind CSS, TypeScript
-- **Cloud & DevOps**: AWS, Docker, Kubernetes, CI/CD, Terraform
-- **Databases**: PostgreSQL, Redis, DynamoDB
-- **Practices**: TDD, Code Review, System Design, Observability
-::end-col::
 
 ## Projects
 
 ### Open Metrics Dashboard
 
-An open-source observability dashboard built with Next.js and a WebSocket
-ingestion service.
+An open-source observability dashboard built with Next.js and a WebSocket ingestion service.
 
-[View Repo](https://github.com/alexmorgan/open-metrics)
-
-### CLI Time Tracker
-
-A cross-platform terminal time-tracking tool with offline sync.
-
-[View Repo](https://github.com/alexmorgan/tt)
+[View repository](https://github.com/alexmorgan/open-metrics)
 
 ## Education
 
-### Technische Universität Berlin — B.Sc. Computer Science (2015 - 2019)
+::row::
+**Technische Universität Berlin** — B.Sc. Computer Science
+2015 – 2019
+::end-row::
 
 _Grade: 1.7_
 
 ## Certifications
 
-### AWS Certified Solutions Architect — Associate (2023)
-
-### Professional Scrum Master I — Scrum.org (2021)
+- **AWS Certified Solutions Architect — Associate** | Amazon Web Services (2023)
+- **Professional Scrum Master I** | Scrum.org (2021)
 
 ## Languages
 
-::col-2::
-- **English** — Fluent
-- **German** — Professional
-- **Spanish** — Conversational
-::end-col::
+::badges::
+English · German · Spanish
+::end-badges::
 ```
-
----
 
 ## Tips
 
-- Keep the **first heading as your name** and the **second as your title** for
-  the best header rendering.
-- Use `::col-N::` for dense lists (skills, languages) to save vertical space.
-- The **Customizer** controls the global list-column count and template; layout
-  symbols combine with it.
-- Preview updates live — tweak and watch.
+- Keep the first heading as your name and the next line as your title.
+- Put a trailing date inside `::row::` to right-align it. Month names, numeric dates and years all work.
+- Use `::col-2::` for dense skill lists to save vertical space.
+- Thematic breaks in the customiser (font, colours, spacing) are independent of the content.
+- Export a backup (JSON) before switching devices — resumes are stored per browser.

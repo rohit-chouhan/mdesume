@@ -1,0 +1,431 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/site/Header.astro";
+import Footer from "@/components/site/Footer.astro";
+import Icon from "@/components/site/Icon.astro";
+import ResumeSheet from "@/components/ResumeSheet";
+import { createSampleStyles } from "@/lib/samples";
+import { SYMBOL_ALIASES, SYMBOLS, SYMBOL_GROUPS } from "@/lib/symbols";
+import { THEMES } from "@/lib/themes";
+import { href } from "@/lib/site";
+
+const guideStyles = createSampleStyles({
+  template: "classic",
+  textSize: "10",
+  h1Size: "20",
+  h2Size: "14",
+  h3Size: "11.5",
+  padding: "1.35rem",
+  margin: "0.35rem",
+  sectionSpacing: "1rem",
+  listSpacing: "0.15rem",
+});
+
+const headerExample = `::align-center::
+# Alex Morgan
+
+### _Senior Software Engineer_
+
+[alex@example.com](mailto:alex@example.com) · +1 555 0142 · Berlin, Germany
+
+[alexmorgan.dev](https://alexmorgan.dev) · [github.com/alexmorgan](https://github.com/alexmorgan)
+::end-align::`;
+
+const sections = [
+  { id: "quick-start", label: "Quick start" },
+  { id: "header", label: "The header" },
+  { id: "markdown", label: "Standard Markdown" },
+  ...SYMBOL_GROUPS.map((group) => ({ id: `symbols-${group.toLowerCase()}`, label: `${group} symbols` })),
+  { id: "aliases", label: "Aliases" },
+  { id: "themes", label: "Themes" },
+  { id: "pdf", label: "PDF export" },
+  { id: "ai-prompting", label: "AI & LLMs" },
+  { id: "troubleshooting", label: "Troubleshooting" },
+];
+---
+
+<BaseLayout
+  title="Guide"
+  description="The complete mdesume Markdown guide: header format, standard Markdown, every layout symbol, aliases, themes and PDF export."
+>
+  <Header />
+
+  <main id="main" class="flex-1">
+    <section class="border-b border-slate-200 bg-white py-12 dark:border-slate-800 dark:bg-slate-900 sm:py-16">
+      <div class="container-page">
+        <p class="eyebrow"><Icon name="book-open" size={14} /> Documentation</p>
+        <h1 class="mt-4 max-w-3xl text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+          The mdesume guide
+        </h1>
+        <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
+          A resume is a Markdown document with a header, sections, and optional <code class="code-inline">::symbols::</code>
+          for layout. Every symbol on this page is rendered live by the same engine the builder uses.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <a href={href("/dashboard")} class="btn btn-primary">Start building <Icon name="arrow-right" size={16} /></a>
+          <a
+            href={href("/guide.md")}
+            target="_blank"
+            class="btn btn-secondary"
+          >
+            <Icon name="code" size={16} /> Raw Markdown (.md)
+          </a>
+          <a
+            href={href("/llms.txt")}
+            target="_blank"
+            class="btn btn-secondary"
+          >
+            <Icon name="file-text" size={16} /> llms.txt
+          </a>
+          <button
+            id="copy-guide-btn"
+            type="button"
+            class="btn btn-secondary cursor-pointer"
+          >
+            <Icon name="copy" size={16} /> Copy for AI
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="container-page grid gap-10 py-12 lg:grid-cols-[220px_minmax(0,1fr)] lg:py-16">
+      <aside class="hidden lg:block">
+        <nav class="sticky top-24 space-y-1" aria-label="Guide contents">
+          <p class="mb-2 px-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">Contents</p>
+          {sections.map((section) => (
+            <a
+              href={`#${section.id}`}
+              class="block rounded-lg px-3 py-1.5 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            >
+              {section.label}
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <div class="min-w-0 space-y-14">
+        <section id="quick-start" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">Quick start</h2>
+          <ol class="mt-4 space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            <li><strong class="text-slate-900 dark:text-white">1.</strong> Open the builder and create a resume.</li>
+            <li><strong class="text-slate-900 dark:text-white">2.</strong> Start with <code class="code-inline"># Your Name</code>, then a short subtitle.</li>
+            <li><strong class="text-slate-900 dark:text-white">3.</strong> Add <code class="code-inline">## Section</code> headings (Experience, Skills, Education).</li>
+            <li><strong class="text-slate-900 dark:text-white">4.</strong> Use symbols for columns, rows and visual accents — all listed below.</li>
+            <li><strong class="text-slate-900 dark:text-white">5.</strong> Choose a theme, then download the PDF.</li>
+          </ol>
+          <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+            <strong>Symbols go on their own line.</strong> A block symbol like <code class="code-inline">::col-2::</code> must be
+            separated from surrounding text by a newline. If it is glued to a word, it is treated as normal text.
+          </div>
+        </section>
+
+        <section id="header" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">The header</h2>
+          <p class="section-lead text-base!">
+            The first heading is your name and is styled specially by every theme. Keep the subtitle immediately after it:
+            mdesume removes the usual heading gap so the header reads as a single block.
+          </p>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <pre class="code-block text-[11.5px]"><code>{headerExample}</code></pre>
+            <div class="guide-sheet">
+              <div class="guide-zoom">
+                <ResumeSheet markdown={headerExample} styles={guideStyles} className="resume-flow" />
+              </div>
+            </div>
+          </div>
+          <ul class="mt-4 space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
+            <li>· <code class="code-inline"># Name</code> — the document title.</li>
+            <li>· <code class="code-inline">### _Title_</code> — an italic subtitle (a bold paragraph works too).</li>
+            <li>· Contact and profile links can be separated with <code class="code-inline">·</code>, <code class="code-inline">|</code> or spaces.</li>
+            <li>· Platform icons appear automatically for GitHub, LinkedIn, LeetCode, mail and web links.</li>
+          </ul>
+        </section>
+
+        <section id="markdown" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">Standard Markdown</h2>
+          <p class="section-lead text-base!">
+            Everything GitHub-flavoured Markdown supports works: headings, bold, italics, code, links, lists, tables
+            and blockquotes.
+          </p>
+          <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                <tr>
+                  <th class="px-4 py-2.5 font-semibold">Write</th>
+                  <th class="px-4 py-2.5 font-semibold">Result</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-950">
+                <tr><td class="px-4 py-2.5 font-mono text-xs">## Experience</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A section heading</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">### Company — Role</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A sub-heading</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">**bold** · _italic_</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">Emphasis</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">- bullet</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A list item</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">[label](https://…)</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A link</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">&gt; quote</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A callout</td></tr>
+                <tr><td class="px-4 py-2.5 font-mono text-xs">---</td><td class="px-4 py-2.5 text-slate-600 dark:text-slate-300">A horizontal rule</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {SYMBOL_GROUPS.map((group) => (
+          <section id={`symbols-${group.toLowerCase()}`} class="scroll-mt-24">
+            <h2 class="section-title text-2xl!">{group} symbols</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+              {group === "Layout" && "Structure the page without touching HTML."}
+              {group === "Inline" && "Small accents that live inside a sentence, heading or list item."}
+              {group === "Media" && "Images and generated codes that embed cleanly in the PDF."}
+              {group === "Spacing" && "Fine-tune vertical rhythm and page breaks."}
+            </p>
+
+            <div class="mt-5 space-y-5">
+              {SYMBOLS.filter((symbol) => symbol.group === group).map((symbol) => (
+                <article id={symbol.id} class="surface scroll-mt-24 overflow-hidden">
+                  <div class="grid lg:grid-cols-[1.02fr_0.98fr]">
+                    <div class="min-w-0 p-5">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="chip border-brand-200! bg-brand-50! text-brand-700! dark:border-brand-500/30! dark:bg-brand-50!0/10 dark:text-brand-300!">
+                          {symbol.name}
+                        </span>
+                        <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                          {symbol.syntax}
+                        </code>
+                      </div>
+                      <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{symbol.description}</p>
+                      {symbol.note && (
+                        <p class="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{symbol.note}</p>
+                      )}
+                      <pre class="code-block mt-4 text-[11.5px]"><code>{symbol.example}</code></pre>
+                    </div>
+                    <div class="min-w-0 border-t border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60 lg:border-l lg:border-t-0">
+                      <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Live result</p>
+                      <div class="guide-sheet">
+                        <div class="guide-zoom">
+                          <ResumeSheet markdown={symbol.example} styles={guideStyles} className="resume-flow" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <section id="aliases" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">Aliases</h2>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            Several intuitive spellings map to the same symbol. Use whichever reads best to you.
+          </p>
+          <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                <tr>
+                  <th class="px-4 py-2.5 font-semibold">Alias</th>
+                  <th class="px-4 py-2.5 font-semibold">Canonical form</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-950">
+                {SYMBOL_ALIASES.map((alias) => (
+                  <tr>
+                    <td class="px-4 py-2.5 font-mono text-xs">{alias.alias}</td>
+                    <td class="px-4 py-2.5 font-mono text-xs text-slate-500 dark:text-slate-400">{alias.canonical}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="themes" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">Themes</h2>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            Every theme is tested against the renderer. Themes change typography and decoration, never your content.
+          </p>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            {THEMES.map((theme) => (
+              <div class="surface flex items-center gap-3 p-3">
+                <span class="h-9 w-9 shrink-0 rounded-lg" style={`background:${theme.accent}`} aria-hidden="true"></span>
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold text-slate-900 dark:text-white">{theme.name}</p>
+                  <p class="truncate text-[11px] text-slate-500 dark:text-slate-400">{theme.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="pdf" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">PDF export</h2>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            <strong>Save as PDF</strong> opens your browser's print dialog with a clean, full-size copy of the resume.
+            Choose <strong>Save as PDF</strong> (or <strong>Microsoft Print to PDF</strong>) as the destination. The result
+            is a real vector PDF with selectable text, working links and the exact theme.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Single page large (default)</strong> — saves as one continuous large page without page breaks so your layout is never cut in half.</span></li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Multi-page auto print</strong> — split automatically across standard A4 or Letter sheets for physical printing.</span></li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Paper size</strong> — A4 or US Letter; the print page width and base height are set to match.</span></li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Selectable text</strong> — headings, bullets and links stay real text, so they can be searched and parsed by ATS software.</span></li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Links and icons</strong> — links stay clickable and the theme's SVG icons print as vectors.</span></li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> <span><strong>Local only</strong> — the browser produces the file; nothing is uploaded.</span></li>
+          </ul>
+          <div class="mt-5 surface-muted p-4 text-sm text-slate-600 dark:text-slate-300">
+            <p class="font-semibold text-slate-900 dark:text-white">Page breaks</p>
+            <p class="mt-1">
+              Add <code class="code-inline">::page-break::</code> between sections to start a new page in multi-page exports (rendered as a subtle divider in single-page mode).
+            </p>
+          </div>
+        </section>
+
+        <section id="ai-prompting" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">AI &amp; LLM prompt guide</h2>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            You can use ChatGPT, Claude, Gemini, or any AI to draft or rewrite your resume into mdesume's exact format.
+            We provide a standardized <code class="code-inline">llms.txt</code> and raw <code class="code-inline">guide.md</code> that contains the complete schema, symbols, and sample prompts.
+          </p>
+          <div class="mt-4 surface p-5">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white">How to prompt an AI:</h3>
+            <p class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+              Copy our AI guide or link an AI directly to the raw Markdown documentation:
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a href={href("/guide.md")} target="_blank" class="btn btn-secondary btn-sm">
+                <Icon name="code" size={14} /> Open guide.md
+              </a>
+              <a href={href("/llms.txt")} target="_blank" class="btn btn-secondary btn-sm">
+                <Icon name="file-text" size={14} /> Open llms.txt
+              </a>
+              <button id="copy-ai-prompt-btn" type="button" class="btn btn-primary btn-sm cursor-pointer">
+                <Icon name="copy" size={14} /> Copy AI Prompt Template
+              </button>
+            </div>
+            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-950 p-3.5 font-mono text-[11px] leading-relaxed text-slate-200 dark:border-slate-800">
+              <p class="text-slate-400">// Sample prompt to send to ChatGPT / Claude / Gemini:</p>
+              <p>Please convert the following resume details into mdesume Markdown format adhering to the specification at https://mdesume.rohitchouhan.com/guide.md. Use ::align-center:: for the header, ::row:: for work experience dates, and ::col-2:: for technical skills. Do not output raw HTML tags.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="troubleshooting" class="scroll-mt-24">
+          <h2 class="section-title text-2xl!">Troubleshooting</h2>
+          <div class="mt-4 space-y-4">
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">A symbol appears as text</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Check that it is on its own line and spelled exactly as documented. Block symbols are case-insensitive,
+                but inline symbols must stay attached to their sentence (<code class="code-inline">::rating-4::</code> is fine
+                mid-line, <code class="code-inline">::col-2::</code> is not).
+              </p>
+            </div>
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">A column swallows the next section</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Close it with <code class="code-inline">::end-col::</code>. Forgetting is safe: the next top-level
+                <code class="code-inline">##</code> heading closes it automatically, but an explicit close keeps the intent clear.
+              </p>
+            </div>
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">A date is not aligned right</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                The date parser understands <code class="code-inline">May 2024 – Present</code>,
+                <code class="code-inline">07/2021 - 05/2024</code>, <code class="code-inline">2020</code> and
+                <code class="code-inline">(2020)</code>. Put the title and date inside <code class="code-inline">::row::</code> …
+                <code class="code-inline">::end-row::</code>, or let a trailing date be detected automatically.
+              </p>
+            </div>
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">The print dialog crashes Edge or Chrome</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Chromium's print preview on Windows can crash due to an offline printer, damaged driver, hardware
+                acceleration conflict, or the <strong>Microsoft Print to PDF</strong> queue. Try:
+              </p>
+              <ul class="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-300 list-disc list-inside">
+                <li><strong>Ctrl + Shift + P</strong>: opens the Windows system print dialog directly, bypassing the preview.</li>
+                <li><strong>Browser settings</strong>: turn off <em>Use graphics acceleration when available</em> in System settings.</li>
+                <li><strong>Chrome/Edge flags</strong>: enable <code class="code-inline">#enable-oop-print-drivers</code> to sandbox printer drivers.</li>
+                <li><strong>Windows printers</strong>: open Windows Settings → Printers & scanners and set a working printer (or Microsoft Print to PDF) as default.</li>
+                <li><strong>Firefox</strong>: try printing in Firefox, which uses a separate rendering engine.</li>
+              </ul>
+            </div>
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">The print preview is blank or clipped</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Open the <strong>Preview</strong> tab first (mdesume switches to it for you). In the print dialog, set
+                margins to <strong>None</strong> and pick the same paper size you chose in the customiser.
+              </p>
+            </div>
+            <div class="surface p-4">
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Where are my resumes stored?</h3>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                In this browser's IndexedDB. They do not sync between devices — use
+                <strong> Export → Full backup</strong> and import it elsewhere.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const copyBtn = document.getElementById("copy-guide-btn");
+  const copyPromptBtn = document.getElementById("copy-ai-prompt-btn");
+
+  const promptText = `You are an expert resume writer. Please convert my background into valid mdesume Markdown following the specification at https://mdesume.rohitchouhan.com/guide.md:
+- Start with # Name and ### _Role_ inside ::align-center::
+- Use ::row:: Company — Role \\n Dates ::end-row:: for jobs
+- Use ::col-2:: for technical skills and ::badges:: for keywords
+- Do NOT use raw HTML tags (use ::symbol:: directives instead)
+- Use strong action verbs with measurable metrics in bullet points
+
+Here is my background:
+`;
+
+  copyBtn?.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/guide.md");
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      const original = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<span class="inline-flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copied guide.md!</span>';
+      setTimeout(() => {
+        copyBtn.innerHTML = original;
+      }, 2000);
+    } catch {
+      window.open("/guide.md", "_blank");
+    }
+  });
+
+  copyPromptBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(promptText);
+      const original = copyPromptBtn.innerHTML;
+      copyPromptBtn.innerHTML = '<span class="inline-flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copied Prompt!</span>';
+      setTimeout(() => {
+        copyPromptBtn.innerHTML = original;
+      }, 2000);
+    } catch {
+      // fallback
+    }
+  });
+</script>
+
+<style>
+  .code-inline {
+    border-radius: 0.3rem;
+    background: var(--color-slate-100);
+    padding: 0.1rem 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.84em;
+    color: var(--color-brand-700);
+  }
+
+  :global(.dark) .code-inline {
+    background: var(--color-slate-800);
+    color: var(--color-brand-300);
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+import { href } from "@/lib/site";
+import Icon from "./Icon.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-slate-200 bg-white py-10 dark:border-slate-800 dark:bg-slate-950">
+  <div class="container-page flex flex-col items-center justify-between gap-5 sm:flex-row">
+    <div class="flex items-center gap-2.5">
+      <span class="brand-mark h-8! w-8! rounded-lg!"><Icon name="file-text" size={16} /></span>
+      <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">mdesume</span>
+    </div>
+
+    <p class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+      Built with Astro, Tailwind CSS and Markdown · Free &amp; open source
+    </p>
+
+    <div class="flex items-center gap-1">
+      <a href={href("/guide")} class="nav-link text-xs!">Guide</a>
+      <a href={href("/guide.md")} class="nav-link text-xs!">guide.md</a>
+      <a href={href("/llms.txt")} class="nav-link text-xs!">llms.txt</a>
+      <a href={href("/dashboard")} class="nav-link text-xs!">Dashboard</a>
+      <a
+        href="https://github.com/rohit-chouhan/mdesume"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-icon"
+        aria-label="mdesume on GitHub"
+      >
+        <Icon name="github" size={18} />
+      </a>
+    </div>
+  </div>
+  <p class="container-page mt-6 text-center text-[11px] text-slate-400 dark:text-slate-600">
+    © {year} mdesume · MIT licensed · Your data never leaves this browser
+  </p>
+</footer>

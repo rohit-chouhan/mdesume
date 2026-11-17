@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BuilderApp from "@/components/builder/BuilderApp";
+---
+
+<BaseLayout
+  title="Builder"
+  description="Write Markdown, preview your resume live and download a finished PDF."
+  noindex
+>
+  <BuilderApp client:load />
+</BaseLayout>

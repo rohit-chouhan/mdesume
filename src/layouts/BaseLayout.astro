@@ -1,0 +1,80 @@
+---
+import "@/styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = "Build clean, ATS-friendly resumes from Markdown. Free, privacy-first, fully static — every theme exports a real PDF with metadata. No account required.",
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} · mdesume` : "mdesume — Markdown resume builder";
+const canonical = new URL(Astro.url.pathname, Astro.site);
+// BASE_URL may omit the trailing slash depending on the trailingSlash config;
+// asset paths always need one.
+const rawBase = import.meta.env.BASE_URL || "/";
+const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
+---
+
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="icon" type="image/svg+xml" href={`${base}icon.svg`} />
+    <link rel="apple-touch-icon" href={`${base}icon.svg`} />
+    {/* The dev preview proxy blocks the manifest as a cross-origin subresource. */}
+    {import.meta.env.PROD && <link rel="manifest" href={`${base}manifest.webmanifest`} />}
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="mdesume" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="keywords" content="resume builder, CV maker, markdown resume, ATS resume, PDF export, free resume builder" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+
+    <!-- Apply the saved theme before first paint to avoid a light/dark flash. -->
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem("mdesume-theme");
+          const dark =
+            stored === "dark" ||
+            ((stored === null || stored === "system") &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          const root = document.documentElement;
+          root.classList.toggle("dark", dark);
+          root.style.colorScheme = dark ? "dark" : "light";
+          root.dataset.theme = dark ? "dark" : "light";
+        } catch {
+          /* localStorage may be unavailable in private modes. */
+        }
+      })();
+    </script>
+  </head>
+
+  <body class="flex min-h-full flex-col">
+    <a class="site-skip" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

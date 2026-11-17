@@ -1,18 +1,52 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import astro from "eslint-plugin-astro";
+import reactHooks from "eslint-plugin-react-hooks";
+import globals from "globals";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
-
-export default eslintConfig;
+export default tseslint.config(
+  {
+    ignores: ["dist/**", ".astro/**", "node_modules/**", "public/**", "coverage/**"],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...astro.configs.recommended,
+  {
+    files: ["**/*.{ts,tsx}"],
+    plugins: { "react-hooks": reactHooks },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+    },
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  {
+    files: ["**/*.astro"],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
+  },
+  {
+    files: ["*.mjs", "*.ts"],
+    languageOptions: {
+      globals: { ...globals.node },
+    },
+  },
+  {
+    files: ["tests/**/*.{ts,tsx}", "vitest.setup.ts"],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-explicit-any": "error",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
+);

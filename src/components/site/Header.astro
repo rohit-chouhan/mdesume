@@ -1,0 +1,43 @@
+---
+import { href, isActivePath } from "@/lib/site";
+import Icon from "./Icon.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const path = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/85">
+  <div class="container-page flex h-16 items-center justify-between gap-3">
+    <a href={href("/")} class="brand" aria-label="mdesume home">
+      <span class="brand-mark"><Icon name="file-text" size={18} /></span>
+      <span>mdesume</span>
+    </a>
+
+    <nav class="flex items-center gap-0.5 sm:gap-1" aria-label="Primary">
+      <a
+        href={href("/guide")}
+        class:list={["nav-link", isActivePath(path, "/guide") && "nav-link-active"]}
+      >
+        <Icon name="book-open" size={16} />
+        <span class="hidden sm:inline">Guide</span>
+      </a>
+      <a
+        href={href("/dashboard")}
+        class:list={["nav-link", isActivePath(path, "/dashboard") && "nav-link-active"]}
+      >
+        Dashboard
+      </a>
+      <a
+        href="https://github.com/rohit-chouhan/mdesume"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nav-link hidden sm:inline-flex"
+        aria-label="mdesume on GitHub"
+      >
+        <Icon name="github" size={16} />
+        <span class="hidden lg:inline">GitHub</span>
+      </a>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>

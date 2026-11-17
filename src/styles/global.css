@@ -1,0 +1,1483 @@
+/* ==========================================================================
+   mdesume — global styles
+   Sections: 1) tokens  2) app UI  3) resume base  4) symbols  5) themes
+             6) print   7) helpers
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=EB+Garamond:wght@400;600;700&family=Fira+Code:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lato:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&family=Newsreader:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Outfit:wght@400;600;700&family=PT+Serif:wght@400;700&family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;700&family=Source+Code+Pro:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --page: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --panel: #ffffff;
+    --line: #e2e8f0;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --page: #020617;
+    --ink: #e2e8f0;
+    --muted: #94a3b8;
+    --panel: #0f172a;
+    --line: #1e293b;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-brand-500/25;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .brand {
+    @apply inline-flex items-center gap-2.5 font-semibold tracking-tight text-slate-900 dark:text-white;
+  }
+
+  .brand-mark {
+    @apply grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 text-white shadow-sm shadow-brand-500/30;
+  }
+
+  .nav-link {
+    @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+
+  .nav-link-active {
+    @apply bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white;
+  }
+
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-brand-600 text-white shadow-sm shadow-brand-600/25 hover:bg-brand-700;
+  }
+
+  .btn-secondary {
+    @apply border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800;
+  }
+
+  .btn-ghost {
+    @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+
+  .btn-sm {
+    @apply gap-1.5 rounded-lg px-2.5 py-1.5 text-xs;
+  }
+
+  .btn-icon {
+    @apply inline-grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white;
+  }
+
+  .surface {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .surface-muted {
+    @apply rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-300;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl;
+  }
+
+  .section-lead {
+    @apply mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500;
+  }
+
+  .field-select {
+    @apply w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white bg-[length:16px] bg-[right_0.6rem_center] bg-no-repeat px-3 py-2 pr-9 text-sm text-slate-900 shadow-sm transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  .field-hint {
+    @apply mt-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300;
+  }
+
+  .segmented {
+    @apply inline-flex rounded-lg border border-slate-200 bg-slate-100 p-0.5 dark:border-slate-700 dark:bg-slate-800;
+  }
+
+  .segmented-item {
+    @apply flex cursor-pointer items-center justify-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white;
+  }
+
+  .segmented-item[aria-pressed="true"] {
+    @apply bg-white text-slate-900 shadow-sm;
+  }
+
+  .dark .segmented-item[aria-pressed="true"],
+  :where(.dark, .dark *) .segmented-item[aria-pressed="true"] {
+    @apply border border-slate-700/80 bg-slate-950 text-white shadow-sm;
+  }
+
+  .kbd {
+    @apply rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300;
+  }
+
+  .link-inline {
+    @apply font-semibold text-brand-600 underline underline-offset-4 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-200;
+  }
+}
+
+/* ==========================================================================
+   2. App shell
+   ========================================================================== */
+
+.site-skip {
+  @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white;
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgb(148 163 184 / 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(148 163 184 / 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 50%, transparent 100%);
+}
+
+.paper-shadow {
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.06),
+    0 12px 32px -12px rgb(15 23 42 / 0.25);
+}
+
+.builder-shell {
+  height: 100dvh;
+}
+
+.builder-pane {
+  min-height: 0;
+  min-width: 0;
+}
+
+.paper-stage {
+  background-color: #eef1f6;
+  background-image: radial-gradient(rgb(100 116 139 / 0.16) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.dark .paper-stage {
+  background-color: #111827;
+  background-image: radial-gradient(rgb(148 163 184 / 0.14) 1px, transparent 1px);
+}
+
+.paper-zoom {
+  transition: transform 120ms ease-out;
+  will-change: transform;
+}
+
+/* Landing hero: the A4 sheet scales down without changing its layout width. */
+.hero-paper {
+  --hero-scale: 0.56;
+  width: 445px;
+  height: calc(1123px * var(--hero-scale));
+}
+
+.hero-paper-inner {
+  width: 794px;
+  transform: scale(var(--hero-scale));
+  transform-origin: top left;
+}
+
+@media (max-width: 639px) {
+  .hero-paper {
+    --hero-scale: 0.4;
+    width: 318px;
+    height: calc(1123px * var(--hero-scale));
+  }
+}
+
+.toast {
+  @apply pointer-events-none fixed bottom-5 left-1/2 z-[120] -translate-x-1/2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-xl;
+  animation: toast-in 180ms ease-out;
+}
+
+.dark .toast {
+  @apply border-slate-700 bg-slate-100 text-slate-900;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-in {
+  animation: fade-in 180ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-backdrop {
+  @apply fixed inset-0 z-[100] flex items-end justify-center bg-slate-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-6;
+}
+
+.modal-panel {
+  @apply flex max-h-[92dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900 sm:rounded-2xl;
+}
+
+/* Guide code blocks */
+.code-block {
+  @apply overflow-x-auto rounded-xl border border-slate-200 bg-slate-950 p-3.5 font-mono text-[12px] leading-relaxed text-slate-100;
+}
+
+.guide-sheet {
+  @apply overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700;
+}
+
+.guide-sheet-scale {
+  transform-origin: top left;
+}
+
+/* A flow layout for guide demos: no fixed paper height, natural width. */
+.resume-doc.resume-flow {
+  min-height: 0;
+}
+
+.guide-zoom {
+  width: 794px;
+  zoom: 0.52;
+}
+
+@media (max-width: 1280px) {
+  .guide-zoom {
+    zoom: 0.46;
+  }
+}
+
+@media (max-width: 640px) {
+  .guide-zoom {
+    zoom: 0.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .guide-zoom {
+    zoom: 0.34;
+  }
+}
+
+.guide-sheet {
+  overflow-x: auto;
+}
+
+/* ==========================================================================
+   3. Resume paper (pure CSS: shared by preview and the text PDF)
+   ========================================================================== */
+
+.resume-doc {
+  --resume-h1-color: #1f2937;
+  --resume-h2-color: #374151;
+  --resume-h3-color: #4b5563;
+  --resume-text-color: #4b5563;
+  --resume-link-color: #2563eb;
+  --resume-icon-color: #64748b;
+  --resume-h1-size: 18pt;
+  --resume-h2-size: 12pt;
+  --resume-h3-size: 11pt;
+  --resume-text-size: 10pt;
+  --resume-font: "Inter", sans-serif;
+  --resume-padding: 2rem;
+  --resume-margin: 0.75rem;
+  --resume-line-height: 1.2;
+  --resume-list-cols: 1;
+  --resume-list-spacing: 0.25rem;
+  --resume-section-spacing: 1.5rem;
+  --resume-width: 210mm;
+  --resume-height: 297mm;
+  --resume-text-align: left;
+
+  box-sizing: border-box;
+  width: var(--resume-width);
+  min-height: var(--resume-height);
+  padding: var(--resume-padding);
+  background: #ffffff;
+  color: var(--resume-text-color);
+  font-family: var(--resume-font);
+  font-size: var(--resume-text-size);
+  line-height: var(--resume-line-height);
+  text-align: var(--resume-text-align);
+  overflow-wrap: break-word;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  -webkit-font-smoothing: antialiased;
+}
+
+.resume-doc *,
+.resume-doc *::before,
+.resume-doc *::after {
+  box-sizing: border-box;
+}
+
+.resume-doc > :first-child,
+.resume-doc > .resume-align:first-child > :first-child {
+  margin-top: 0 !important;
+}
+
+.resume-doc > :last-child,
+.resume-doc > .resume-align:last-child > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* --- Headings: the name sits tight against its subtitle ------------------ */
+.resume-doc h1 {
+  margin: 0 0 0.28em;
+  color: var(--resume-h1-color);
+  font-size: var(--resume-h1-size);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.resume-doc h1.resume-name {
+  margin-top: 0;
+}
+
+/* No extra gap between the name and whatever introduces it. */
+.resume-doc h1 + h2,
+.resume-doc h1 + h3,
+.resume-doc h1 + h4,
+.resume-doc h1 + p,
+.resume-doc h1 + ul,
+.resume-doc h1 + .resume-row {
+  margin-top: 0;
+}
+
+.resume-doc h1 + h3 {
+  margin-bottom: 0.5em;
+}
+
+.resume-doc h2 {
+  margin: var(--resume-section-spacing) 0 0.5em;
+  color: var(--resume-h2-color);
+  font-size: var(--resume-h2-size);
+  font-weight: 600;
+  line-height: 1.25;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.resume-doc h3 {
+  margin: calc(var(--resume-section-spacing) * 0.55) 0 0.28em;
+  color: var(--resume-h3-color);
+  font-size: var(--resume-h3-size);
+  font-weight: 600;
+  line-height: 1.3;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.resume-doc h4 {
+  margin: calc(var(--resume-section-spacing) * 0.45) 0 0.25em;
+  color: var(--resume-h3-color);
+  font-size: calc(var(--resume-h3-size) * 0.95);
+  font-weight: 600;
+}
+
+.resume-doc h2:first-child,
+.resume-doc h3:first-child,
+.resume-doc h4:first-child {
+  margin-top: 0;
+}
+
+/* --- Body copy ----------------------------------------------------------- */
+.resume-doc p {
+  margin: 0 0 var(--resume-margin);
+}
+
+.resume-doc p:last-child {
+  margin-bottom: 0;
+}
+
+.resume-doc h3 + p,
+.resume-doc h4 + p {
+  margin-top: 0.15em;
+}
+
+.resume-doc strong {
+  font-weight: 650;
+  color: color-mix(in srgb, var(--resume-text-color) 45%, #0f172a);
+}
+
+.resume-doc em {
+  font-style: italic;
+}
+
+.resume-doc small {
+  font-size: 0.85em;
+}
+
+.resume-doc a {
+  color: var(--resume-link-color);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.resume-doc a:hover {
+  text-decoration: underline;
+}
+
+.resume-doc .resume-link--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  text-decoration: none;
+  vertical-align: baseline;
+}
+
+.resume-doc .resume-link-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: 0 0 auto;
+  color: var(--resume-icon-color);
+  transform: translateY(0.08em);
+}
+
+.resume-doc .resume-link-label {
+  line-height: inherit;
+}
+
+.resume-doc ul,
+.resume-doc ol {
+  margin: 0 0 var(--resume-margin);
+  padding-left: 1.35em;
+}
+
+.resume-doc ul {
+  list-style: disc;
+}
+
+.resume-doc ol {
+  list-style: decimal;
+}
+
+.resume-doc li {
+  margin: 0 0 var(--resume-list-spacing);
+  padding-left: 0.1em;
+}
+
+.resume-doc li > p {
+  margin: 0 0 0.15em;
+}
+
+.resume-doc li > ul,
+.resume-doc li > ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+.resume-doc ul ul {
+  list-style: circle;
+}
+
+.resume-doc li:last-child {
+  margin-bottom: 0;
+}
+
+.resume-doc blockquote {
+  margin: 0.4em 0;
+  padding: 0.15em 0 0.15em 0.85em;
+  border-left: 3px solid color-mix(in srgb, var(--resume-h2-color) 45%, white);
+  color: color-mix(in srgb, var(--resume-text-color) 88%, #0f172a);
+  font-style: italic;
+}
+
+.resume-doc blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.resume-doc hr {
+  margin: var(--resume-margin) 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--resume-h2-color) 25%, white);
+}
+
+.resume-doc code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: #f1f5f9;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.88em;
+}
+
+.resume-doc pre {
+  margin: 0 0 var(--resume-margin);
+  padding: 0.6em 0.8em;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 0.85em;
+}
+
+.resume-doc pre code {
+  padding: 0;
+  background: none;
+}
+
+.resume-doc table {
+  width: 100%;
+  margin: 0 0 var(--resume-margin);
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.resume-doc th,
+.resume-doc td {
+  padding: 0.3em 0.45em;
+  border: 1px solid color-mix(in srgb, var(--resume-h2-color) 22%, white);
+  text-align: left;
+  vertical-align: top;
+}
+
+.resume-doc th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.resume-doc img {
+  max-width: 100%;
+}
+
+/* --- Multi-column lists -------------------------------------------------- */
+.resume-doc.multi-col-lists ul {
+  column-count: var(--resume-list-cols);
+  column-gap: 1.75rem;
+}
+
+.resume-doc.multi-col-lists li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* ==========================================================================
+   4. Layout symbols
+   ========================================================================== */
+
+.columns-2,
+.columns-3,
+.columns-4 {
+  column-gap: 1.9rem;
+  orphans: 2;
+  widows: 2;
+  margin-bottom: var(--resume-margin);
+}
+
+.columns-2 {
+  column-count: 2;
+}
+
+.columns-3 {
+  column-count: 3;
+}
+
+.columns-4 {
+  column-count: 4;
+}
+
+.columns-2 > *,
+.columns-3 > *,
+.columns-4 > * {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.columns-2 > *:first-child,
+.columns-3 > *:first-child,
+.columns-4 > *:first-child,
+.columns-2 > :first-child > :first-child,
+.columns-3 > :first-child > :first-child,
+.columns-4 > :first-child > :first-child {
+  margin-top: 0 !important;
+}
+
+.columns-2 ul,
+.columns-2 ol,
+.columns-3 ul,
+.columns-3 ol,
+.columns-4 ul,
+.columns-4 ol,
+.columns-2 .resume-no-bullets,
+.columns-3 .resume-no-bullets,
+.columns-4 .resume-no-bullets {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.columns-2 li,
+.columns-3 li,
+.columns-4 li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.column-item {
+  display: block;
+  margin-bottom: calc(var(--resume-section-spacing) * 0.7);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.column-item:last-child {
+  margin-bottom: 0;
+}
+
+.column-item > *:first-child {
+  margin-top: 0 !important;
+}
+
+.column-item > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+.resume-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  width: 100%;
+  margin-bottom: 0.15em;
+}
+
+.resume-row > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.resume-row > .resume-row-date {
+  margin-left: auto;
+}
+
+.resume-row-date {
+  flex: 0 0 auto;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--resume-text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.resume-align-center {
+  text-align: center;
+}
+
+.resume-align-right {
+  text-align: right;
+}
+
+.resume-align-justify {
+  text-align: justify;
+}
+
+.resume-align-left {
+  text-align: left;
+}
+
+.resume-align-center > *,
+.resume-align-center h1,
+.resume-align-center h2,
+.resume-align-center h3,
+.resume-align-center p {
+  text-align: center;
+}
+
+.resume-align-right > *,
+.resume-align-right h1,
+.resume-align-right h2,
+.resume-align-right h3,
+.resume-align-right p {
+  text-align: right;
+}
+
+.resume-align-justify > *,
+.resume-align-justify p {
+  text-align: justify;
+}
+
+.resume-align-left > *,
+.resume-align-left h1,
+.resume-align-left h2,
+.resume-align-left h3,
+.resume-align-left p {
+  text-align: left;
+}
+
+.resume-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.2rem 0 var(--resume-margin);
+}
+
+.resume-badge {
+  display: inline-block;
+  padding: 0.22em 0.6em;
+  border-radius: 9999px;
+  background: var(--resume-h2-color);
+  color: #ffffff;
+  font-size: 0.68em;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.resume-rating {
+  display: inline-flex;
+  gap: 0.16em;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 0.35em;
+}
+
+.resume-rating-bar {
+  display: inline-block;
+  width: 9px;
+  height: 5px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--resume-text-color) 22%, white);
+}
+
+.resume-rating-bar.filled {
+  background: var(--resume-h1-color);
+}
+
+.resume-inline-icon {
+  display: inline-block;
+  margin-right: 0.25em;
+  color: var(--resume-icon-color);
+  font-size: 0.95em;
+  line-height: 1;
+  vertical-align: -0.05em;
+}
+
+.resume-avatar {
+  float: right;
+  width: 84px;
+  height: 84px;
+  margin: 0 0 0.6rem 0.9rem;
+  border: 2px solid var(--resume-h1-color);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.resume-qr {
+  float: right;
+  width: 72px;
+  height: 72px;
+  margin: 0 0 0.5rem 0.75rem;
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--resume-h2-color) 30%, white);
+  border-radius: 6px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.resume-qr-fallback {
+  display: inline-block;
+  padding: 0.3em 0.5em;
+  border: 1px dashed #94a3b8;
+  border-radius: 4px;
+  font-size: 0.7em;
+  word-break: break-all;
+}
+
+.resume-note {
+  margin: 0.35em 0 var(--resume-margin);
+  padding: 0.45em 0.75em;
+  border-left: 3px solid var(--resume-h2-color);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--resume-h2-color) 6%, white);
+  font-style: italic;
+}
+
+.resume-compact > * {
+  margin-top: 0 !important;
+  margin-bottom: 0.12em !important;
+}
+
+.resume-compact > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+.resume-no-bullets ul,
+.resume-no-bullets ol {
+  padding-left: 0;
+  list-style: none;
+}
+
+.resume-no-bullets li::before {
+  content: none !important;
+}
+
+.resume-spacer {
+  margin: 0;
+  padding: 0;
+}
+
+.resume-divider {
+  margin: var(--resume-margin) 0;
+  border-top: 1px solid color-mix(in srgb, var(--resume-h2-color) 28%, white);
+}
+
+.resume-page-break {
+  height: 0;
+  break-after: page;
+  page-break-after: always;
+}
+
+/* ==========================================================================
+   5. Themes — every theme is scoped to .resume-doc.template-<id>
+   ========================================================================== */
+
+/* Classic ---------------------------------------------------------------- */
+.resume-doc.template-classic h1 {
+  padding-bottom: 0.22em;
+  border-bottom: 2px solid var(--resume-h1-color);
+}
+
+.resume-doc.template-classic h2 {
+  padding-bottom: 0.14em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 30%, white);
+}
+
+/* Modern ----------------------------------------------------------------- */
+.resume-doc.template-modern h1 {
+  padding-left: 0.4em;
+  border-left: 7px solid var(--resume-h1-color);
+}
+
+.resume-doc.template-modern h2 {
+  padding-left: 0.45em;
+  border-left: 4px solid var(--resume-h2-color);
+}
+
+.resume-doc.template-modern ul {
+  list-style-type: square;
+}
+
+/* Minimalist ------------------------------------------------------------- */
+.resume-doc.template-minimalist h1 {
+  font-weight: 300;
+  letter-spacing: 0.08em;
+}
+
+.resume-doc.template-minimalist h2 {
+  padding-bottom: 0.45em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 22%, white);
+  font-size: calc(var(--resume-h2-size) * 0.66);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-minimalist h3 {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Elegant ---------------------------------------------------------------- */
+.resume-doc.template-elegant h1 {
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-elegant h2 {
+  margin-top: calc(var(--resume-section-spacing) * 1.25);
+  padding: 0.42em 0;
+  border-top: 1px solid color-mix(in srgb, var(--resume-h2-color) 70%, white);
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 70%, white);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-elegant p,
+.resume-doc.template-elegant li {
+  line-height: calc(var(--resume-line-height) * 1.04);
+}
+
+/* Creative --------------------------------------------------------------- */
+.resume-doc.template-creative h1 {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.resume-doc.template-creative h2 {
+  display: inline-block;
+  margin-right: 0.25em;
+  padding: 0.26em 0.85em;
+  border-radius: 9999px;
+  background: var(--resume-h2-color);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.resume-doc.template-creative ul {
+  padding-left: 1.05em;
+  list-style: none;
+}
+
+.resume-doc.template-creative li {
+  position: relative;
+}
+
+.resume-doc.template-creative li::before {
+  position: absolute;
+  left: -1.05em;
+  top: 0;
+  color: var(--resume-h2-color);
+  font-size: 0.85em;
+  content: "✦";
+}
+
+/* Neo-Brutal ------------------------------------------------------------- */
+.resume-doc.template-brutal {
+  background: #ffffff;
+}
+
+.resume-doc.template-brutal h1 {
+  padding-bottom: 0.16em;
+  border-bottom: 4px solid #111111;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-brutal h2 {
+  margin-top: calc(var(--resume-section-spacing) * 1.2);
+  padding: 0.26em 0.55em;
+  border: 2px solid #111111;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 var(--resume-h2-color);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-brutal h3 {
+  font-weight: 800;
+}
+
+.resume-doc.template-brutal a {
+  padding: 0 0.18em;
+  border: 1px solid #111111;
+  background: var(--resume-h2-color);
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resume-doc.template-brutal .resume-link-icon {
+  color: #ffffff;
+}
+
+.resume-doc.template-brutal .resume-badge {
+  border: 1px solid #111111;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: 2px 2px 0 #111111;
+  color: #111111;
+}
+
+/* Aesthetic -------------------------------------------------------------- */
+.resume-doc.template-aesthetic h1 {
+  padding-right: 0.55em;
+  border-right: 4px solid var(--resume-h1-color);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+
+.resume-doc.template-aesthetic h2 {
+  padding-bottom: 0.16em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 24%, white);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Professional ----------------------------------------------------------- */
+.resume-doc.template-professional h1 {
+  padding-bottom: 0.26em;
+  border-bottom: 3px solid var(--resume-h1-color);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-professional h2 {
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 34%, white);
+  font-size: calc(var(--resume-h2-size) * 0.82);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-professional h3 {
+  font-weight: 700;
+}
+
+/* Bold Impact ------------------------------------------------------------ */
+.resume-doc.template-bold h1 {
+  padding: 0.3em 0.45em;
+  border-radius: 4px;
+  background: var(--resume-h1-color);
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-bold h2 {
+  padding: 0.2em 0.55em;
+  border-left: 5px solid var(--resume-h2-color);
+  background: color-mix(in srgb, var(--resume-h2-color) 8%, white);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-bold h3 {
+  font-weight: 700;
+}
+
+/* Academic --------------------------------------------------------------- */
+.resume-doc.template-academic h1 {
+  padding: 0.4em 0;
+  border-top: 1px solid var(--resume-h1-color);
+  border-bottom: 1px solid var(--resume-h1-color);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-academic h2 {
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 45%, white);
+  font-variant: small-caps;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-academic h3 {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.resume-doc.template-academic ul {
+  list-style-type: circle;
+}
+
+/* Executive -------------------------------------------------------------- */
+.resume-doc.template-executive h1 {
+  padding-bottom: 0.28em;
+  border-bottom: 3px double var(--resume-h1-color);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.resume-doc.template-executive h2 {
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-h2-color) 40%, white);
+  font-size: calc(var(--resume-h2-size) * 0.78);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-executive h3 {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Tech ------------------------------------------------------------------- */
+.resume-doc.template-tech h1 {
+  padding-bottom: 0.2em;
+  border-bottom: 3px solid var(--resume-h1-color);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.resume-doc.template-tech h2 {
+  padding-left: 0.55em;
+  border-left: 3px solid var(--resume-h2-color);
+  font-size: calc(var(--resume-h2-size) * 0.72);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-tech ul {
+  padding-left: 1.05em;
+  list-style: none;
+}
+
+.resume-doc.template-tech li {
+  position: relative;
+}
+
+.resume-doc.template-tech li::before {
+  position: absolute;
+  left: -1.05em;
+  top: 0;
+  color: var(--resume-h2-color);
+  content: "▸";
+}
+
+.resume-doc.template-tech .resume-badge {
+  border-radius: 4px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.62em;
+}
+
+/* Aurora ----------------------------------------------------------------- */
+.resume-doc.template-aurora h1 {
+  padding-bottom: 0.24em;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, var(--resume-h1-color), var(--resume-h2-color)) 1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.resume-doc.template-aurora h2 {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--resume-h2-color) 12%, white);
+  color: var(--resume-h2-color);
+  font-weight: 700;
+}
+
+.resume-doc.template-aurora h3 {
+  color: color-mix(in srgb, var(--resume-h3-color) 70%, var(--resume-h2-color));
+}
+
+.resume-doc.template-aurora .resume-badge {
+  background: color-mix(in srgb, var(--resume-h2-color) 82%, #7c3aed);
+}
+
+/* Nordic ----------------------------------------------------------------- */
+.resume-doc.template-nordic h1 {
+  padding-bottom: 0.2em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.resume-doc.template-nordic h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: calc(var(--resume-h2-size) * 0.78);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-nordic h2::after {
+  content: "";
+  flex: 1;
+  height: 1.5px;
+  background: color-mix(in srgb, var(--resume-h2-color) 35%, transparent);
+}
+
+.resume-doc.template-nordic .resume-badge {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--resume-h2-color) 12%, white);
+  color: var(--resume-h2-color);
+}
+
+/* Emerald ---------------------------------------------------------------- */
+.resume-doc.template-emerald h1 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.resume-doc.template-emerald h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 2px solid var(--resume-h2-color);
+  box-shadow: 0 2px 0 0 color-mix(in srgb, var(--resume-h2-color) 25%, white);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-emerald h3 {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.resume-doc.template-emerald .resume-badge {
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--resume-h2-color) 35%, white);
+}
+
+/* Compact ATS ------------------------------------------------------------ */
+.resume-doc.template-compact {
+  line-height: calc(var(--resume-line-height) * 0.96);
+}
+
+.resume-doc.template-compact h1 {
+  padding-bottom: 0.15em;
+  border-bottom: 1.5px solid var(--resume-h1-color);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.resume-doc.template-compact h2 {
+  margin-top: 0.4em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid var(--resume-h2-color);
+  font-size: calc(var(--resume-h2-size) * 0.82);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.resume-doc.template-compact h3 {
+  font-weight: 600;
+}
+
+.resume-doc.template-compact .resume-badge {
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  font-size: 0.65em;
+}
+
+/* Monochrome ------------------------------------------------------------- */
+.resume-doc.template-monochrome h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.resume-doc.template-monochrome h2 {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  background: var(--resume-h2-color, #000000);
+  color: #ffffff !important;
+  font-size: calc(var(--resume-h2-size) * 0.74);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+.resume-doc.template-monochrome h3 {
+  font-weight: 700;
+}
+
+.resume-doc.template-monochrome hr,
+.resume-doc.template-monochrome .resume-divider {
+  border-color: #000000;
+  border-width: 1.5px;
+}
+
+/* Terminal --------------------------------------------------------------- */
+.resume-doc.template-cyber h1 {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.resume-doc.template-cyber h1::before {
+  content: "$ ";
+  color: var(--resume-h2-color);
+  opacity: 0.8;
+}
+
+.resume-doc.template-cyber h2 {
+  font-family: var(--font-mono, monospace);
+  font-size: calc(var(--resume-h2-size) * 0.76);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-bottom: 0.2em;
+  border-bottom: 1px dashed var(--resume-h2-color);
+}
+
+.resume-doc.template-cyber h2::before {
+  content: ":: ";
+  color: var(--resume-h2-color);
+}
+
+.resume-doc.template-cyber ul {
+  padding-left: 1.1em;
+  list-style: none;
+}
+
+.resume-doc.template-cyber li {
+  position: relative;
+}
+
+.resume-doc.template-cyber li::before {
+  position: absolute;
+  left: -1.1em;
+  top: 0;
+  content: "$";
+  color: var(--resume-h2-color);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85em;
+}
+
+.resume-doc.template-cyber .resume-badge {
+  font-family: var(--font-mono, monospace);
+  border-radius: 2px;
+  border: 1px solid var(--resume-h2-color);
+  background: transparent;
+  color: var(--resume-h2-color);
+}
+
+/* ==========================================================================
+   6. Print
+   --------------------------------------------------------------------------
+   Print-only styling is injected by src/lib/print.ts. It hides the app and
+   prints a clean clone of the resume, so no global print rules are needed
+   here (and none can interfere with the workspace).
+   ========================================================================== */
+
+/* ==========================================================================
+   7. Chrome niceties
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+  background-color: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
+
+/* Range inputs used in the customiser */
+input[type="range"] {
+  accent-color: var(--color-brand-600, #4f46e5);
+}
+
+input[type="color"] {
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid var(--color-slate-300, #cbd5e1);
+  border-radius: 6px;
+  background: transparent;
+  padding: 2px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}

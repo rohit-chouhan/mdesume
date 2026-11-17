@@ -45,8 +45,9 @@ Please include:
 ## 🛡️ Hardening Notes for Contributors
 
 - Treat all user-supplied Markdown as untrusted. `react-markdown` + `remark-gfm` render it; avoid enabling raw HTML unless sanitized.
-- Keep dependencies current via Dependabot (see `.github/dependabot.yml`). Run `bun run lint`, `bun run test`, and `bun run build` before any release.
-- The build is fully static (`output: "export"`); never introduce server-only code that would change the threat model.
+- Keep dependencies current via Dependabot (see `.github/dependabot.yml`). Run `bun run check`, `bun run lint`, `bun run test`, and `bun run build` before any release.
+- The build is fully static (Astro `output: "static"`, built into `dist/`); never introduce server-only code or a backend that would change the threat model.
+- Generated QR codes are the only `data:` images allowed through the Markdown renderer; every other URL keeps the Markdown sanitiser's defaults.
 
 ## 📄 Attribution
 

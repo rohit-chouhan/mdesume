@@ -1,4 +1,5 @@
-import { get, set, del, keys } from 'idb-keyval';
+import { get, set, del, keys } from "idb-keyval";
+import { DEFAULT_TEMPLATE, isTemplateId } from "./themes";
 
 export interface ResumeMetadata {
   title?: string;
@@ -9,12 +10,43 @@ export interface ResumeMetadata {
 }
 
 export const DEFAULT_METADATA: ResumeMetadata = {
-  title: '',
-  author: '',
-  subject: '',
-  keywords: '',
-  creator: 'mdesume',
+  title: "",
+  author: "",
+  subject: "",
+  keywords: "",
+  creator: "mdesume",
 };
+
+export type PageSize = "A4" | "Letter";
+export type ExportLayout = "single" | "paginated";
+
+export interface ResumeStyles {
+  h1Color: string;
+  h2Color: string;
+  h3Color: string;
+  textColor: string;
+  linkColor: string;
+  iconColor: string;
+  h1Size: string;
+  h2Size: string;
+  h3Size: string;
+  textSize: string;
+  fontFamily: string;
+  padding: string;
+  margin: string;
+  lineHeight: string;
+  textAlign: "left" | "center" | "right" | "justify";
+  listColumns: number;
+  pageSize: PageSize;
+  template: string;
+  listSpacing: string;
+  sectionSpacing: string;
+  exportFormat: ExportLayout;
+  pdfScale: number;
+  showLinkIcons: boolean;
+  hideLinkUnderline: boolean;
+  metadata?: ResumeMetadata;
+}
 
 export interface ResumeData {
   id: string;
@@ -26,89 +58,103 @@ export interface ResumeData {
   metadata?: ResumeMetadata;
 }
 
-export interface ResumeStyles {
-  h1Color: string;
-  h2Color: string;
-  h3Color: string;
-  textColor: string;
-  h1Size: string;
-  h2Size: string;
-  h3Size: string;
-  textSize: string;
-  fontFamily: string;
-  padding: string;
-  margin: string;
-  lineHeight: string;
-  textAlign?: string;
-  listColumns: number;
-  pageSize: 'A4' | 'Letter';
-  template: 'classic' | 'modern' | 'minimalist' | 'elegant' | 'creative' | 'brutal' | 'aesthetic' | 'professional' | 'bold' | 'academic';
-  listSpacing: string;
-  sectionSpacing: string;
-  exportFormat?: 'single' | 'split';
-  showLinkIcons?: boolean;
-  linkColor?: string;
-  iconColor?: string;
-  hideLinkUnderline?: boolean;
-  metadata?: ResumeMetadata;
-}
-
-const DEFAULT_STYLES: ResumeStyles = {
-  h1Color: '#1f2937',
-  h2Color: '#374151',
-  h3Color: '#4b5563',
-  textColor: '#4b5563',
-  h1Size: '24',
-  h2Size: '18',
-  h3Size: '14',
-  textSize: '12',
+export const DEFAULT_STYLES: ResumeStyles = {
+  h1Color: "#1f2937",
+  h2Color: "#374151",
+  h3Color: "#4b5563",
+  textColor: "#4b5563",
+  linkColor: "#2563eb",
+  iconColor: "#64748b",
+  h1Size: "18",
+  h2Size: "12",
+  h3Size: "11",
+  textSize: "10",
   fontFamily: "'Inter', sans-serif",
-  padding: '2rem',
-  margin: '1rem',
-  lineHeight: '1.6',
-  textAlign: 'left',
+  padding: "2rem",
+  margin: "0.75rem",
+  lineHeight: "1.2",
+  textAlign: "left",
   listColumns: 1,
-  pageSize: 'A4',
-  template: 'classic',
-  listSpacing: '0.25rem',
-  sectionSpacing: '1.5rem',
-  exportFormat: 'single',
+  pageSize: "A4",
+  template: DEFAULT_TEMPLATE,
+  listSpacing: "0.25rem",
+  sectionSpacing: "1.5rem",
+  exportFormat: "single",
+  pdfScale: 2,
   showLinkIcons: true,
-  linkColor: '#2563eb', // Default blue for links
-  iconColor: '#64748b', // Default slate for icons
-  hideLinkUnderline: true, // Default to hidden underline
+  hideLinkUnderline: true,
 };
+
+const clampNumber = (value: unknown, min: number, max: number, fallback: number): number => {
+  const parsed = typeof value === "number" ? value : Number.parseFloat(String(value ?? ""));
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+};
+
+/** Fill in missing style keys and fix values written by older versions. */
+export function normalizeStyles(input: Partial<ResumeStyles> | undefined): ResumeStyles {
+  const styles = { ...DEFAULT_STYLES, ...(input ?? {}) };
+
+  const legacyFormat = (input as { exportFormat?: string } | undefined)?.exportFormat;
+  const exportFormat: ExportLayout =
+    legacyFormat === "split" || legacyFormat === "paginated" ? "paginated" : "single";
+
+  const textAlign = ["left", "center", "right", "justify"].includes(styles.textAlign)
+    ? styles.textAlign
+    : "left";
+
+  return {
+    ...styles,
+    template: isTemplateId(styles.template) ? styles.template : DEFAULT_TEMPLATE,
+    pageSize: styles.pageSize === "Letter" ? "Letter" : "A4",
+    textAlign,
+    listColumns: Math.round(clampNumber(styles.listColumns, 1, 4, 1)),
+    pdfScale: clampNumber(styles.pdfScale, 1, 3, 2),
+    exportFormat,
+    h1Color: styles.h1Color || DEFAULT_STYLES.h1Color,
+    h2Color: styles.h2Color || DEFAULT_STYLES.h2Color,
+    h3Color: styles.h3Color || DEFAULT_STYLES.h3Color,
+    textColor: styles.textColor || DEFAULT_STYLES.textColor,
+    linkColor: styles.linkColor || DEFAULT_STYLES.linkColor,
+    iconColor: styles.iconColor || DEFAULT_STYLES.iconColor,
+  };
+}
 
 export interface ResumeExport {
   app: "mdesume";
-  version: 1;
+  version: 2;
   exportedAt: string;
   resume: ResumeData;
 }
 
-export function isResumeExport(value: unknown): value is ResumeExport {
+export function isResumeExport(value: unknown): value is ResumeExport | (Omit<ResumeExport, "version"> & { version: 1 }) {
   if (typeof value !== "object" || value === null) return false;
-  const v = value as Record<string, unknown>;
-  const r = v.resume as Record<string, unknown> | undefined;
+  const record = value as Record<string, unknown>;
+  const resume = record.resume as Record<string, unknown> | undefined;
   return (
-    v.app === "mdesume" &&
-    v.version === 1 &&
-    typeof r === "object" &&
-    r !== null &&
-    typeof r.markdown === "string" &&
-    typeof r.styles === "object" &&
-    r.styles !== null
+    record.app === "mdesume" &&
+    (record.version === 1 || record.version === 2) &&
+    typeof resume === "object" &&
+    resume !== null &&
+    typeof resume.markdown === "string" &&
+    typeof resume.styles === "object" &&
+    resume.styles !== null
   );
 }
 
 export const db = {
   async getResume(id: string): Promise<ResumeData | undefined> {
-    return get(id);
+    const stored = await get<ResumeData>(id);
+    if (!stored) return undefined;
+    return {
+      ...stored,
+      styles: normalizeStyles(stored.styles),
+      metadata: { ...DEFAULT_METADATA, ...(stored.metadata ?? {}) },
+    };
   },
 
   async saveResume(resume: ResumeData): Promise<void> {
-    resume.updatedAt = Date.now();
-    await set(resume.id, resume);
+    await set(resume.id, { ...resume, updatedAt: Date.now() });
   },
 
   async deleteResume(id: string): Promise<void> {
@@ -118,67 +164,83 @@ export const db = {
   async getAllResumes(): Promise<ResumeData[]> {
     const allKeys = await keys();
     const resumes: ResumeData[] = [];
-
     for (const key of allKeys) {
-      if (typeof key === 'string') {
-        const resume = await get<ResumeData>(key);
-        if (resume) {
-          resumes.push(resume);
-        }
+      if (typeof key !== "string") continue;
+      const resume = await get<ResumeData>(key);
+      if (resume) {
+        resumes.push({
+          ...resume,
+          styles: normalizeStyles(resume.styles),
+          metadata: { ...DEFAULT_METADATA, ...(resume.metadata ?? {}) },
+        });
       }
     }
-
     return resumes.sort((a, b) => b.updatedAt - a.updatedAt);
   },
 
-  async createNewResume(title: string, defaultMarkdown: string = ''): Promise<ResumeData> {
-    const newResume: ResumeData = {
+  async createNewResume(title: string, markdown = ""): Promise<ResumeData> {
+    const now = Date.now();
+    const resume: ResumeData = {
       id: crypto.randomUUID(),
       title,
-      markdown: defaultMarkdown,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      markdown,
+      createdAt: now,
+      updatedAt: now,
       styles: { ...DEFAULT_STYLES },
+      metadata: { ...DEFAULT_METADATA, title },
+    };
+    await set(resume.id, resume);
+    return resume;
+  },
+
+  async duplicateResume(id: string): Promise<ResumeData | undefined> {
+    const original = await get<ResumeData>(id);
+    if (!original) return undefined;
+    const now = Date.now();
+    const copy: ResumeData = {
+      ...original,
+      id: crypto.randomUUID(),
+      title: `${original.title} (copy)`,
+      createdAt: now,
+      updatedAt: now,
+      styles: normalizeStyles(original.styles),
       metadata: {
-        title: title || '',
-        author: '',
-        subject: '',
-        keywords: '',
-        creator: 'mdesume',
+        ...DEFAULT_METADATA,
+        ...(original.metadata ?? {}),
+        title: `${original.metadata?.title || original.title} (copy)`,
       },
     };
-    await set(newResume.id, newResume);
-    return newResume;
+    await set(copy.id, copy);
+    return copy;
   },
 
   async exportResume(id: string): Promise<ResumeExport | undefined> {
-    const resume = await get<ResumeData>(id);
+    const resume = await this.getResume(id);
     if (!resume) return undefined;
     return {
       app: "mdesume",
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       resume,
     };
   },
 
   async importResume(resume: ResumeData): Promise<ResumeData> {
-    // New id avoids clobbering an existing resume on the target device.
+    const now = Date.now();
     const imported: ResumeData = {
       ...resume,
       id: crypto.randomUUID(),
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      styles: { ...DEFAULT_STYLES, ...resume.styles },
-      metadata: resume.metadata ? { ...resume.metadata } : {
-        title: resume.title || '',
-        author: '',
-        subject: '',
-        keywords: '',
-        creator: 'mdesume',
+      title: resume.title || "Imported resume",
+      createdAt: now,
+      updatedAt: now,
+      styles: normalizeStyles(resume.styles),
+      metadata: {
+        ...DEFAULT_METADATA,
+        ...(resume.metadata ?? {}),
+        title: resume.metadata?.title || resume.title || "Imported resume",
       },
     };
     await set(imported.id, imported);
     return imported;
-  }
+  },
 };

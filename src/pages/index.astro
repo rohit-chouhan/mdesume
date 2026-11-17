@@ -1,0 +1,344 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/site/Header.astro";
+import Footer from "@/components/site/Footer.astro";
+import Icon from "@/components/site/Icon.astro";
+import ResumeSheet from "@/components/ResumeSheet";
+import { SAMPLE_MARKDOWN, createSampleStyles } from "@/lib/samples";
+import { THEMES } from "@/lib/themes";
+import { href } from "@/lib/site";
+
+const heroStyles = createSampleStyles({
+  template: "modern",
+  h1Color: "#1e1b4b",
+  h2Color: "#4338ca",
+  h3Color: "#475569",
+  textColor: "#475569",
+  linkColor: "#4f46e5",
+  padding: "1.7rem",
+  textSize: "9.5",
+  h1Size: "21",
+  h2Size: "14",
+  h3Size: "11",
+  margin: "0.55rem",
+  sectionSpacing: "1.15rem",
+  listSpacing: "0.15rem",
+});
+
+const showcase = [
+  {
+    id: "classic",
+    name: "Classic",
+    styles: createSampleStyles({ ...heroStyles, template: "classic", h2Color: "#334155" }),
+  },
+  {
+    id: "creative",
+    name: "Creative",
+    styles: createSampleStyles({ ...heroStyles, template: "creative", h1Color: "#831843", h2Color: "#db2777" }),
+  },
+  {
+    id: "tech",
+    name: "Tech",
+    styles: createSampleStyles({ ...heroStyles, template: "tech", h1Color: "#064e3b", h2Color: "#059669" }),
+  },
+];
+
+const snippet = `::align-center::
+# Alex Morgan
+
+### _Senior Software Engineer_
+
+alex@example.com · Berlin, Germany
+::end-align::
+
+## Experience
+
+::row::
+**Northwind Systems** — Senior Engineer
+May 2022 – Present
+::end-row::
+
+- Cut p99 latency by 45%.
+- Built a component library used by six teams.`;
+
+const features = [
+  {
+    icon: "pen" as const,
+    title: "Markdown-first",
+    body: "Write plain text you can version, diff and own forever. No locked-in editor, no proprietary format.",
+  },
+  {
+    icon: "download" as const,
+    title: "Native Save as PDF",
+    body: "One click opens the browser's Save as PDF dialog — selectable text, working links, no image exports.",
+  },
+  {
+    icon: "palette" as const,
+    title: "18 tested themes",
+    body: "Every theme is covered by the test suite. Switch the look without touching a single word of content.",
+  },
+  {
+    icon: "layers" as const,
+    title: "Layout symbols",
+    body: "Columns, title/date rows, skill pills, ratings, icons, QR codes and page breaks — all in Markdown.",
+  },
+  {
+    icon: "lock" as const,
+    title: "Local-first privacy",
+    body: "Resumes live in IndexedDB in your browser. No account, no upload, no analytics, no tracking.",
+  },
+  {
+    icon: "zap" as const,
+    title: "Static and portable",
+    body: "Astro builds a fully static site that deploys to GitHub Pages, Netlify or any web host for free.",
+  },
+];
+
+const steps = [
+  {
+    title: "Write or paste Markdown",
+    body: "Start from the sample resume, or paste your existing Markdown. The preview updates as you type.",
+  },
+  {
+    title: "Pick a theme and tune it",
+    body: "Choose one of 18 themes, then adjust font, colours, spacing, columns and link icons.",
+  },
+  {
+    title: "Download a finished PDF",
+    body: "Export a single-page or paginated A4/Letter PDF with embedded document metadata.",
+  },
+];
+---
+
+<BaseLayout>
+  <Header />
+
+  <main id="main" class="flex-1">
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-[520px] hero-grid" aria-hidden="true"></div>
+      <div
+        class="pointer-events-none absolute -right-40 top-10 h-[420px] w-[420px] rounded-full bg-brand-400/20 blur-3xl"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -left-32 top-40 h-[320px] w-[320px] rounded-full bg-violet-400/20 blur-3xl"
+        aria-hidden="true"
+      >
+      </div>
+
+      <div class="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
+        <div>
+          <p class="eyebrow">
+            <Icon name="sparkles" size={14} />
+            Markdown in. Interview-ready PDF out.
+          </p>
+
+          <h1 class="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl">
+            Your resume,<br />
+            written in <span class="bg-gradient-to-r from-brand-600 to-violet-600 bg-clip-text text-transparent">Markdown</span>.
+          </h1>
+
+          <p class="mt-5 max-w-xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
+            mdesume turns a plain Markdown file into a polished, ATS-friendly resume. Eighteen themes,
+            live preview, and a real PDF download with proper document metadata — all in your browser.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href={href("/dashboard")} class="btn btn-primary px-6 py-3 text-base">
+              Build your resume <Icon name="arrow-right" size={18} />
+            </a>
+            <a href={href("/guide")} class="btn btn-secondary px-6 py-3 text-base">
+              <Icon name="book-open" size={18} /> Read the guide
+            </a>
+          </div>
+
+          <ul class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+            <li class="flex items-center gap-1.5"><Icon name="check" size={15} class="text-emerald-500" /> No sign-up</li>
+            <li class="flex items-center gap-1.5"><Icon name="check" size={15} class="text-emerald-500" /> Works offline</li>
+            <li class="flex items-center gap-1.5"><Icon name="check" size={15} class="text-emerald-500" /> MIT licensed</li>
+          </ul>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -inset-4 rounded-3xl bg-gradient-to-br from-brand-500/15 via-violet-500/10 to-transparent blur-2xl" aria-hidden="true"></div>
+          <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-900">
+              <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+              <span class="ml-2 truncate rounded-md bg-white px-2 py-0.5 text-[10px] text-slate-400 shadow-sm dark:bg-slate-800 dark:text-slate-500">
+                mdesume / builder
+              </span>
+            </div>
+            <div class="relative h-[480px] overflow-hidden bg-slate-100 dark:bg-slate-800 sm:h-[620px] lg:h-[640px]">
+              <div class="hero-paper absolute left-1/2 top-4 -translate-x-1/2">
+                <div class="hero-paper-inner">
+                  <ResumeSheet markdown={SAMPLE_MARKDOWN} styles={heroStyles} className="paper-shadow" />
+                </div>
+              </div>
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-100 to-transparent dark:from-slate-800"></div>
+            </div>
+          </div>
+
+          <div class="absolute -bottom-5 -left-4 hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-lg dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:flex">
+            <span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300">
+              <Icon name="download" size={13} />
+            </span>
+            resume.pdf · 148 KB
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Markdown snippet -->
+    <section class="border-y border-slate-200 bg-white py-14 dark:border-slate-800 dark:bg-slate-900">
+      <div class="container-page grid items-center gap-10 lg:grid-cols-2">
+        <div>
+          <p class="eyebrow"><Icon name="code" size={14} /> Plain Markdown, plus a few symbols</p>
+          <h2 class="section-title mt-4">Content stays content.</h2>
+          <p class="section-lead">
+            Headings become sections, bold text becomes emphasis, and a handful of
+            <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-brand-700 dark:bg-slate-800 dark:text-brand-300">::symbols::</code>
+            add layout. Nothing else to learn, and no HTML required.
+          </p>
+          <ul class="mt-6 space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> Use any editor — copy and paste works.</li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> Real links, bold, italics, lists and tables via GFM.</li>
+            <li class="flex gap-2.5"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-emerald-500" /> Export the Markdown at any time — it is your data.</li>
+          </ul>
+          <a href={href("/guide")} class="link-inline mt-6 inline-flex items-center gap-1.5 text-sm">
+            See every symbol <Icon name="arrow-right" size={14} />
+          </a>
+        </div>
+
+        <div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 px-4 py-2.5 text-[11px] font-medium text-slate-400">
+            <span class="font-mono">resume.md</span>
+            <span class="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">Markdown</span>
+          </div>
+          <pre class="code-block rounded-none! border-0! bg-transparent! p-4! text-[11.5px] sm:text-xs"><code>{snippet}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 sm:py-20">
+      <div class="container-page">
+        <div class="max-w-2xl">
+          <p class="eyebrow"><Icon name="layers" size={14} /> Everything included</p>
+          <h2 class="section-title mt-4">A resume builder that respects your time — and your data.</h2>
+          <p class="section-lead">
+            No accounts, no subscription walls, no hidden watermarks. Just a fast builder that produces documents
+            recruiters and applicant tracking systems can read.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => (
+            <article class="surface p-5 transition-shadow hover:shadow-md">
+              <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-300">
+                <Icon name={feature.icon} size={20} />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-slate-900 dark:text-white">{feature.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{feature.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme showcase -->
+    <section class="border-y border-slate-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900 sm:py-20">
+      <div class="container-page">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div class="max-w-xl">
+            <p class="eyebrow"><Icon name="palette" size={14} /> {THEMES.length} themes</p>
+            <h2 class="section-title mt-4">One document. Many first impressions.</h2>
+            <p class="section-lead">Pick a personality, then make it yours with colours, fonts and spacing.</p>
+          </div>
+          <a href={href("/dashboard")} class="btn btn-secondary shrink-0">
+            Try the builder <Icon name="arrow-right" size={16} />
+          </a>
+        </div>
+
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {showcase.map((theme) => (
+            <figure class="group">
+              <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+                <div class="mx-auto overflow-hidden rounded-md bg-white shadow-sm" style="width: 206px; height: 292px;">
+                  <div style="width: 794px; transform: scale(0.26); transform-origin: top left;">
+                    <ResumeSheet markdown={SAMPLE_MARKDOWN} styles={theme.styles} />
+                  </div>
+                </div>
+              </div>
+              <figcaption class="mt-2.5 text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
+                {theme.name}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <ul class="mt-8 flex flex-wrap justify-center gap-2">
+          {THEMES.map((theme) => (
+            <li class="chip">{theme.name}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Steps -->
+    <section class="py-16 sm:py-20">
+      <div class="container-page">
+        <div class="max-w-2xl">
+          <p class="eyebrow"><Icon name="zap" size={14} /> Three steps</p>
+          <h2 class="section-title mt-4">From blank page to PDF in minutes.</h2>
+        </div>
+        <ol class="mt-10 grid gap-5 md:grid-cols-3">
+          {steps.map((step, index) => (
+            <li class="surface relative p-6">
+              <span class="grid h-9 w-9 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">
+                {index + 1}
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-slate-900 dark:text-white">{step.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="pb-16 sm:pb-24">
+      <div class="container-page">
+        <div class="relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-12 text-center shadow-xl sm:px-12 sm:py-16 dark:bg-slate-900">
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-600/30 via-violet-600/20 to-transparent" aria-hidden="true"></div>
+          <div class="relative">
+            <h2 class="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Your next resume is already written. It just needs a theme.
+            </h2>
+            <p class="mx-auto mt-3 max-w-xl text-base text-slate-300">
+              Start with a complete sample, replace the details, and download the PDF. Free forever.
+            </p>
+            <div class="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+              <a href={href("/dashboard")} class="btn bg-white px-6 py-3 text-base text-slate-900 hover:bg-slate-100">
+                Open the builder <Icon name="arrow-right" size={18} />
+              </a>
+              <a
+                href="https://github.com/rohit-chouhan/mdesume"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn border border-white/20 bg-white/5 px-6 py-3 text-base text-white hover:bg-white/10"
+              >
+                <Icon name="github" size={18} /> Star on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -29,31 +29,32 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build static export
-        # Determine the base path:
-        #  - If a CNAME file is present, the site is served from a custom domain
-        #    (root), so basePath must be empty.
-        #  - Otherwise this is a GitHub Pages project page, served under /<repo>,
-        #    so basePath is set to the repo name.
-        # (The previous behaviour always used /<repo>, which broke custom-domain
-        #  deploys because every asset was prefixed with the wrong path.)
+      - name: Determine base path and canonical URL
+        # A CNAME means the site is served from a custom domain at the root.
+        # Otherwise this is a project page served from /<repo>.
         run: |
           if [ -f "public/CNAME" ]; then
             BASE_PATH=""
-            echo "Custom domain detected (CNAME present) — basePath: (root)"
+            SITE_URL="https://$(tr -d '[:space:]' < public/CNAME)"
+            echo "Custom domain detected — basePath: (root), site: ${SITE_URL}"
           else
-            BASE_PATH="/${{ github.event.repository.name }}"
-            echo "Project page deploy — basePath: ${BASE_PATH}"
+            BASE_PATH="/${GITHUB_REPOSITORY#*/}"
+            SITE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io"
+            echo "Project page deploy — basePath: ${BASE_PATH}, site: ${SITE_URL}"
           fi
-          NEXT_PUBLIC_BASE_PATH="${BASE_PATH}" bun run build
+          echo "PUBLIC_BASE_PATH=${BASE_PATH}" >> "$GITHUB_ENV"
+          echo "PUBLIC_SITE_URL=${SITE_URL}" >> "$GITHUB_ENV"
+
+      - name: Build static site
+        run: bun run build
 
       - name: Ensure .nojekyll
-        run: touch out/.nojekyll
+        run: touch dist/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: dist
 
   deploy:
     needs: build

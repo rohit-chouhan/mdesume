@@ -1,0 +1,29 @@
+# mdesume
+
+> A free, open-source, local-first Markdown resume builder. Generates clean, ATS-friendly, single-page and paginated PDFs directly in the browser.
+
+mdesume transforms standard GitHub Flavored Markdown and intuitive layout symbols (columns, date rows, badges, icons, ratings) into professional resumes with eighteen tested themes. No account, no backend, no tracking — your data stays in your browser.
+
+## Core Documentation
+
+- [Markdown Format & AI Guide](https://mdesume.rohitchouhan.com/guide.md): Complete schema, symbols, syntax, and AI instructions for generating mdesume resumes.
+- [Interactive Guide](https://mdesume.rohitchouhan.com/guide): Interactive documentation with live rendered examples of every layout symbol.
+- [Resume Format Reference](https://github.com/rohit-chouhan/mdesume/blob/main/resume-format.md): Canonical repository reference for the resume format.
+
+## Key Features & Schema
+
+- **ATS-Friendly**: Pure semantic text and standard fonts without canvas or rasterized text.
+- **Eighteen Themes**: Classic, Modern, Minimalist, Elegant, Creative, Neo-Brutal, Aesthetic, Professional, Bold Impact, Academic, Executive, Tech, Aurora, Nordic, Emerald, Compact ATS, Monochrome, Terminal.
+- **Layout Symbols**:
+  - `::row:: ... ::end-row::`: Title and date split row
+  - `::col-2::`, `::col-3::`, `::col-4::`: Multi-column blocks
+  - `::align-center::`, `::align-left::`, `::align-right::`, `::align-justify::`: Text alignment
+  - `::badges:: ... ::end-badges::`: Pill badges for skills and tags
+  - `::badge[Text]::`: Single inline pill badge
+  - `::rating-4::`: 5-bar proficiency indicators (0 to 5)
+  - `::page-break::`: Multi-page print break
+  - `::icon[name]::`: Inline glyphs (mail, phone, globe, github, linkedin, etc.)
+  - `::avatar[url]::`: Floated circular profile picture
+  - `::qr[url]::`: Embedded local vector QR code
+- **Defaults**: H1 18pt, H2 12pt, H3 11pt, Body text 10pt, Line height 1.2, Default Theme Classic.
+- **Local-first**: Stored in browser IndexedDB. Real vector PDF export via native browser print.
