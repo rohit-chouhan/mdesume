@@ -1,5 +1,6 @@
-import { Clock, Copy, FileText, Home, Loader2, Plus, Trash2, Upload } from "lucide-react";
+import { Clock, Copy, FileText, Home, Loader2, Plus, Share2, Trash2, Upload } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import ShareModal from "@/components/builder/ShareModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { db, isResumeExport, type ResumeData } from "@/lib/db";
 import { SAMPLE_MARKDOWN } from "@/lib/samples";
@@ -18,6 +19,7 @@ export default function DashboardApp() {
   const [resumes, setResumes] = useState<ResumeData[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [sharingResume, setSharingResume] = useState<ResumeData | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +34,14 @@ export default function DashboardApp() {
   }, []);
 
   useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      (window.location.hash.startsWith("#share=") || window.location.hash.startsWith("#resume="))
+    ) {
+      window.location.replace(href(`/builder${window.location.hash}`));
+      return;
+    }
+
     let cancelled = false;
     db.getAllResumes()
       .then((data) => {
@@ -220,6 +230,15 @@ export default function DashboardApp() {
                         </button>
                         <button
                           type="button"
+                          onClick={() => setSharingResume(resume)}
+                          className="btn-icon"
+                          aria-label={`Share ${resume.title}`}
+                          title="Share"
+                        >
+                          <Share2 size={15} />
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => void handleDuplicate(resume.id)}
                           className="btn-icon"
                           aria-label={`Duplicate ${resume.title}`}
@@ -250,6 +269,14 @@ export default function DashboardApp() {
           Backups are portable JSON files you can import on any device.
         </p>
       </main>
+
+      {sharingResume && (
+        <ShareModal
+          open={Boolean(sharingResume)}
+          onClose={() => setSharingResume(null)}
+          resume={sharingResume}
+        />
+      )}
     </div>
   );
 }

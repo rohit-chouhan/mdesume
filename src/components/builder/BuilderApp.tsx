@@ -6,6 +6,7 @@ import {
   Maximize,
   PenLine,
   Settings2,
+  Share2,
   SlidersHorizontal,
   Sparkles,
   ZoomIn,
@@ -19,10 +20,12 @@ import Customizer from "@/components/builder/Customizer";
 import Editor from "@/components/builder/Editor";
 import ExportMenu from "@/components/builder/ExportMenu";
 import PdfNoticeModal, { PDF_NOTICE_STORAGE_KEY } from "@/components/builder/PdfNoticeModal";
+import ShareModal from "@/components/builder/ShareModal";
 import TemplateModal from "@/components/builder/TemplateModal";
 import { db, type ExportLayout, type ResumeData } from "@/lib/db";
 import { downloadTextFile, safeFilename } from "@/lib/download";
 import { printResume } from "@/lib/print";
+import { decompressResumeFromShareString } from "@/lib/share";
 import { href } from "@/lib/site";
 import { getTheme } from "@/lib/themes";
 
@@ -43,6 +46,7 @@ export default function BuilderApp() {
   const [templateOpen, setTemplateOpen] = useState(false);
   const [analyzerOpen, setAnalyzerOpen] = useState(false);
   const [pdfNoticeOpen, setPdfNoticeOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const [zoom, setZoom] = useState(1);
@@ -89,13 +93,59 @@ export default function BuilderApp() {
   }, [flushSave]);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    const shareMatch = hash.match(/^#(?:share|resume)=(.+)$/);
+
+    if (shareMatch && shareMatch[1]) {
+      decompressResumeFromShareString(shareMatch[1])
+        .then(async (shared) => {
+          if (cancelled) return;
+          const created = await db.createNewResume(shared.title || "Shared resume", shared.markdown);
+          created.styles = shared.styles;
+          if (shared.metadata) created.metadata = shared.metadata;
+          await db.saveResume(created);
+
+          if (cancelled) return;
+          setResume(created);
+          setStatus("ready");
+          window.history.replaceState({}, "", href(`/builder?id=${created.id}`));
+          showToast("Shared resume loaded and saved to your library!");
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          showToast(error instanceof Error ? error.message : "Failed to load shared resume.");
+          const id = new URLSearchParams(window.location.search).get("id");
+          if (id) {
+            db.getResume(id)
+              .then((data) => {
+                if (cancelled) return;
+                if (!data) setStatus("missing");
+                else {
+                  setResume(data);
+                  setStatus("ready");
+                }
+              })
+              .catch(() => {
+                if (!cancelled) setStatus("missing");
+              });
+          } else {
+            setStatus("missing");
+          }
+        });
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const id = new URLSearchParams(window.location.search).get("id");
     if (!id) {
       window.location.replace(href("/dashboard"));
       return;
     }
 
-    let cancelled = false;
     db.getResume(id)
       .then((data) => {
         if (cancelled) return;
@@ -113,7 +163,7 @@ export default function BuilderApp() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [showToast]);
 
   const updateResume = (updates: Partial<ResumeData>) => {
     if (!resume) return;
@@ -328,6 +378,15 @@ export default function BuilderApp() {
             <Sparkles size={14} />
             <span className="hidden md:inline">Analyze</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            className="btn btn-sm btn-secondary gap-1 px-2.5 sm:px-3"
+            aria-label="Share resume"
+          >
+            <Share2 size={14} />
+            <span className="hidden sm:inline">Share</span>
+          </button>
           <ExportMenu
             busy={busy}
             defaultLayout={resume.styles.exportFormat}
@@ -483,6 +542,12 @@ export default function BuilderApp() {
         })}
       </nav>
 
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        resume={resume}
+        onToast={showToast}
+      />
       <TemplateModal
         open={templateOpen}
         onClose={() => setTemplateOpen(false)}
