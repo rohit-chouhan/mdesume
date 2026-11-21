@@ -55,7 +55,7 @@ May 2022 – Present
     description:
       "Align a block to the left, centre, right or justify. Perfect for a centred name and contact header.",
     example: `::align-center::
-# Alex Morgan
+# Rohit Chouhan
 _Senior Software Engineer_
 ::end-align::`,
     note: "Variants: ::align-left::, ::align-right::, ::align-justify::.",
@@ -88,9 +88,9 @@ Available for remote roles worldwide · Open to contract work
     syntax: "::no-bullets:: … ::end-no-bullets::",
     description: "Remove bullet markers while keeping the list structure and spacing.",
     example: `::no-bullets::
-- **Email:** alex@example.com
-- **Phone:** +1 555 0142
-- **Location:** Berlin, Germany
+- **Email:** rohit@example.com
+- **Phone:** +91 98765 43210
+- **Location:** India
 ::end-no-bullets::`,
   },
   {
@@ -163,7 +163,7 @@ A short pitch.
     syntax: "::icon[mail]::",
     description:
       "A small decorative glyph that stays inline. Useful for contact lines where automatic link icons are disabled.",
-    example: `::icon[mail]:: alex@example.com · ::icon[phone]:: +1 555 0142 · ::icon[location]:: Berlin`,
+    example: `::icon[mail]:: rohit@example.com · ::icon[phone]:: +91 98765 43210 · ::icon[location]:: India`,
     note: "Available: mail, phone, globe, link, location, github, linkedin, code, star, check, calendar, clock, download, arrow, dot, diamond, spark.",
   },
   {
@@ -191,7 +191,7 @@ A short pitch.
     syntax: "::avatar[https://…/photo.jpg]::",
     description: "A circular profile photo floated beside the header. Use a square image for best results.",
     example: `::avatar[https://i.pravatar.cc/160?img=12]::
-# Alex Morgan`,
+# Rohit Chouhan`,
   },
   {
     id: "qr",
@@ -200,8 +200,8 @@ A short pitch.
     syntax: "::qr[https://example.com]::",
     description:
       "A real QR code generated in the browser and embedded in the PDF. Links to your portfolio or profile.",
-    example: `::qr[https://alexmorgan.dev]::
-# Alex Morgan`,
+    example: `::qr[https://rohitchouhan.com]::
+# Rohit Chouhan`,
   },
 ];
 

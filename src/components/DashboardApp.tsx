@@ -1,10 +1,13 @@
-import { Clock, Copy, FileText, Home, Loader2, Plus, Share2, Trash2, Upload } from "lucide-react";
+import { ArrowRight, Clock, Copy, FileText, Home, Loader2, Plus, Share2, Sparkles, Trash2, Upload, Wand2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import AiGenerateModal from "@/components/ai/AiGenerateModal";
+import AiSettingsModal from "@/components/ai/AiSettingsModal";
 import ShareModal from "@/components/builder/ShareModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { db, isResumeExport, type ResumeData } from "@/lib/db";
 import { SAMPLE_MARKDOWN } from "@/lib/samples";
 import { href } from "@/lib/site";
+import { STARTER_TEMPLATES, type StarterTemplate } from "@/lib/templatesGallery";
 import { getTheme } from "@/lib/themes";
 
 function formatDate(timestamp: number): string {
@@ -20,8 +23,30 @@ export default function DashboardApp() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [sharingResume, setSharingResume] = useState<ResumeData | null>(null);
+  const [aiSettingsOpen, setAiSettingsOpen] = useState(false);
+  const [aiGenerateOpen, setAiGenerateOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3500);
+  }, []);
+
+  const handleUseStarterTemplate = async (template: StarterTemplate) => {
+    setCreating(true);
+    try {
+      const newResume = await db.createNewResume(template.title, template.markdown);
+      newResume.styles = template.styles;
+      await db.saveResume(newResume);
+      openResume(newResume.id);
+    } catch {
+      setImportError("Could not create resume from template.");
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const loadResumes = useCallback(async () => {
     try {
@@ -119,6 +144,15 @@ export default function DashboardApp() {
             <a href={href("/guide")} className="nav-link hidden md:inline-flex">
               Guide
             </a>
+            <button
+              type="button"
+              onClick={() => setAiSettingsOpen(true)}
+              className="btn btn-ghost btn-sm gap-1.5 text-xs text-slate-700 dark:text-slate-200"
+              title="Configure AI Providers"
+            >
+              <Sparkles size={15} className="text-indigo-600 dark:text-indigo-400" />
+              <span className="hidden sm:inline">AI Settings</span>
+            </button>
             <ThemeToggle />
           </div>
         </div>
@@ -145,12 +179,20 @@ export default function DashboardApp() {
               className="hidden"
               aria-label="Import a mdesume backup"
             />
+            <button
+              type="button"
+              onClick={() => setAiGenerateOpen(true)}
+              className="btn btn-primary bg-linear-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white gap-1.5 shadow-xs"
+            >
+              <Wand2 size={16} />
+              <span>Create with AI</span>
+            </button>
             <button type="button" onClick={() => fileInputRef.current?.click()} className="btn btn-secondary">
               <Upload size={17} /> Import backup
             </button>
-            <button type="button" onClick={() => void handleCreate()} disabled={creating} className="btn btn-primary">
+            <button type="button" onClick={() => void handleCreate()} disabled={creating} className="btn btn-secondary">
               {creating ? <Loader2 size={17} className="animate-spin" /> : <Plus size={17} />}
-              New resume
+              Blank resume
             </button>
           </div>
         </div>
@@ -163,6 +205,64 @@ export default function DashboardApp() {
             {importError}
           </p>
         )}
+
+        {/* Starter Templates & Ideas Section */}
+        <section className="mt-8 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/60">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-brand-600 dark:text-brand-400" />
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Starter Formats & Ideas
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Vetted resume formats with optimal theme pairings, layout directives, and quantified accomplishments.
+              </p>
+            </div>
+            <span className="text-[11px] font-medium text-slate-400">
+              1-click ready to edit
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {STARTER_TEMPLATES.map((tmpl) => (
+              <div
+                key={tmpl.id}
+                className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-3.5 transition-all hover:border-brand-500 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-brand-500/60"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[10px] font-bold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+                      {tmpl.badge}
+                    </span>
+                    <span className="text-[10px] uppercase font-mono text-slate-400">
+                      {tmpl.theme}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-xs font-bold text-slate-900 group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-400">
+                    {tmpl.title}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
+                    {tmpl.description}
+                  </p>
+                </div>
+
+                <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80">
+                  <button
+                    type="button"
+                    onClick={() => void handleUseStarterTemplate(tmpl)}
+                    disabled={creating}
+                    className="btn btn-secondary btn-sm w-full gap-1 text-[11px] font-semibold group-hover:btn-primary"
+                  >
+                    <span>Use Template</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="mt-8">
           {loading ? (
@@ -276,6 +376,26 @@ export default function DashboardApp() {
           onClose={() => setSharingResume(null)}
           resume={sharingResume}
         />
+      )}
+
+      <AiSettingsModal
+        open={aiSettingsOpen}
+        onClose={() => setAiSettingsOpen(false)}
+        onToast={showToast}
+      />
+
+      <AiGenerateModal
+        open={aiGenerateOpen}
+        onClose={() => setAiGenerateOpen(false)}
+        onOpenSettings={() => setAiSettingsOpen(true)}
+        onCreated={openResume}
+        onToast={showToast}
+      />
+
+      {toast && (
+        <div className="toast" role="status" aria-live="polite">
+          {toast}
+        </div>
       )}
     </div>
   );

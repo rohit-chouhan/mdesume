@@ -34,13 +34,13 @@ The first heading is your name. Every theme formats it with dedicated typography
 
 \`\`\`markdown
 ::align-center::
-# Alex Morgan
+# Rohit Chouhan
 
-### _Senior Software Engineer | Cloud & Distributed Systems_
+### _Full-Stack Software Engineer | AI & LLM | FP&A & Financial Analytics_
 
-[alex.morgan@example.com](mailto:alex.morgan@example.com) · +1 555 0142 · Berlin, Germany
+[rohit@example.com](mailto:rohit@example.com) · +91 98765 43210 · India
 
-[alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan) · [github.com/alexmorgan](https://github.com/alexmorgan)
+[rohitchouhan.com](https://rohitchouhan.com) · [linkedin.com/in/rohit-chouhan](https://linkedin.com/in/rohit-chouhan) · [github.com/rohit-chouhan](https://github.com/rohit-chouhan)
 ::end-align::
 \`\`\`
 
@@ -121,13 +121,13 @@ mdesume includes 18 built-in themes:
 
 \`\`\`markdown
 ::align-center::
-# Alex Morgan
+# Rohit Chouhan
 
 ### _Staff Software Engineer | Distributed Systems & Cloud_
 
-[alex.morgan@example.com](mailto:alex.morgan@example.com) · +1 555 0142 · Berlin, Germany
+[rohit@example.com](mailto:rohit@example.com) · +91 98765 43210 · India
 
-[alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan) · [github.com/alexmorgan](https://github.com/alexmorgan)
+[rohitchouhan.com](https://rohitchouhan.com) · [linkedin.com/in/rohit-chouhan](https://linkedin.com/in/rohit-chouhan) · [github.com/rohit-chouhan](https://github.com/rohit-chouhan)
 ::end-align::
 
 ## Summary
@@ -172,7 +172,7 @@ _Remote_
 
 ### Open Metrics Dashboard
 Open-source observability engine built with Go and React. 1.2k+ GitHub stars.
-[github.com/alexmorgan/open-metrics](https://github.com/alexmorgan/open-metrics)
+[github.com/rohit-chouhan/open-metrics](https://github.com/rohit-chouhan/open-metrics)
 
 ## Education
 

@@ -6,8 +6,8 @@ import * as shareLib from "@/lib/share";
 
 const mockResume: ResumeData = {
   id: "test-share-1",
-  title: "Alex Morgan",
-  markdown: "# Alex Morgan\nStaff Engineer",
+  title: "Rohit Chouhan",
+  markdown: "# Rohit Chouhan\nStaff Engineer",
   createdAt: 1700000000000,
   updatedAt: 1700000000000,
   styles: DEFAULT_STYLES,

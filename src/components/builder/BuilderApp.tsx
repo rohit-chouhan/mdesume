@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   BookOpen,
+  Bot,
   Check,
   Eye,
   Maximize,
@@ -9,10 +10,14 @@ import {
   Share2,
   SlidersHorizontal,
   Sparkles,
+  Wand2,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import AiChatDrawer from "@/components/ai/AiChatDrawer";
+import AiImproveModal from "@/components/ai/AiImproveModal";
+import AiSettingsModal from "@/components/ai/AiSettingsModal";
 import ResumeSheet, { PAPER_HEIGHT_PX, PAPER_WIDTH_PX } from "@/components/ResumeSheet";
 import ThemeToggle from "@/components/ThemeToggle";
 import AnalyzerModal from "@/components/builder/AnalyzerModal";
@@ -45,6 +50,9 @@ export default function BuilderApp() {
   const [mobileTab, setMobileTab] = useState<MobileTab>("write");
   const [templateOpen, setTemplateOpen] = useState(false);
   const [analyzerOpen, setAnalyzerOpen] = useState(false);
+  const [aiSettingsOpen, setAiSettingsOpen] = useState(false);
+  const [aiImproveOpen, setAiImproveOpen] = useState(false);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
   const [pdfNoticeOpen, setPdfNoticeOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -371,6 +379,30 @@ export default function BuilderApp() {
           </span>
           <button
             type="button"
+            onClick={() => setAiImproveOpen(true)}
+            className="btn btn-sm border border-amber-500/20 bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 dark:text-amber-300"
+            aria-label="Improve resume with AI"
+            title="Improve resume content & metrics with AI"
+          >
+            <Wand2 size={14} />
+            <span className="hidden md:inline">Improve</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setAiChatOpen((v) => !v)}
+            className={`btn btn-sm ${
+              aiChatOpen
+                ? "bg-indigo-600 text-white"
+                : "border border-indigo-500/20 bg-indigo-500/10 text-indigo-700 hover:bg-indigo-500/20 dark:text-indigo-300"
+            }`}
+            aria-label="Toggle AI assistant"
+            title="AI Chat Assistant"
+          >
+            <Bot size={14} />
+            <span className="hidden md:inline">AI Chat</span>
+          </button>
+          <button
+            type="button"
             onClick={() => setAnalyzerOpen(true)}
             className="btn btn-sm border border-brand-500/20 bg-brand-500/10 text-brand-700 hover:bg-brand-500/20 dark:text-brand-300"
             aria-label="Analyze resume"
@@ -554,7 +586,33 @@ export default function BuilderApp() {
         styles={resume.styles}
         onSelect={(template) => updateResume({ styles: { ...resume.styles, template } })}
       />
-      <AnalyzerModal open={analyzerOpen} onClose={() => setAnalyzerOpen(false)} markdown={resume.markdown} />
+      <AnalyzerModal
+        open={analyzerOpen}
+        onClose={() => setAnalyzerOpen(false)}
+        markdown={resume.markdown}
+        onOpenAiSettings={() => setAiSettingsOpen(true)}
+      />
+      <AiImproveModal
+        open={aiImproveOpen}
+        onClose={() => setAiImproveOpen(false)}
+        markdown={resume.markdown}
+        onApplyMarkdown={(newMd) => updateResume({ markdown: newMd })}
+        onOpenAiSettings={() => setAiSettingsOpen(true)}
+        onToast={showToast}
+      />
+      <AiChatDrawer
+        open={aiChatOpen}
+        onClose={() => setAiChatOpen(false)}
+        markdown={resume.markdown}
+        onApplyMarkdown={(newMd) => updateResume({ markdown: newMd })}
+        onOpenAiSettings={() => setAiSettingsOpen(true)}
+        onToast={showToast}
+      />
+      <AiSettingsModal
+        open={aiSettingsOpen}
+        onClose={() => setAiSettingsOpen(false)}
+        onToast={showToast}
+      />
       <PdfNoticeModal
         open={pdfNoticeOpen}
         onClose={() => setPdfNoticeOpen(false)}

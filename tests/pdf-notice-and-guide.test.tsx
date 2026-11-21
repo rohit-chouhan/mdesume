@@ -75,7 +75,7 @@ describe("generateGuideMarkdown", () => {
     expect(md).toContain("::col-2::");
     expect(md).toContain("::badges::");
     expect(md).toContain("::align-center::");
-    expect(md).toContain("Alex Morgan");
+    expect(md).toContain("Rohit Chouhan");
     expect(md).toContain("https://mdesume.test");
   });
 

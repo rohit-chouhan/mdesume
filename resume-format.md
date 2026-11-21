@@ -1,177 +1,116 @@
-# mdesume resume format
-
-This is the canonical schema for a resume in **mdesume**. Everything is plain
-GitHub-flavoured Markdown plus a few `::symbol::` directives. No HTML is required.
-
-A complete sample resume is at the bottom.
-
----
-
-## 1. The header
-
-The first heading is your name. Every theme styles it specially, and the usual
-heading gap is removed so the name and subtitle read as one block.
-
-```markdown
 ::align-center::
-# Alex Morgan
+# Rohit Chouhan
 
-### _Senior Software Engineer | Web & Cloud_
+### *Full-Stack Software Engineer | AI & LLM | FP&A & Financial Analytics*
 
-[alex@example.com](mailto:alex@example.com) · +1 555 0142 · Berlin, Germany
+[me@rohitchouhan.com](mailto:me@rohitchouhan.com) · Gurugram, Haryana, India
 
-[alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan)
-::end-align::
-```
-
-- `# Name` — the document title.
-- `### _Title_` — an italic subtitle; a bold paragraph also works.
-- Contact and profile links can be separated with `·`, `|` or spaces.
-- Platform icons are added automatically for GitHub, LinkedIn, LeetCode, `mailto:` and web links.
-
-## 2. Standard Markdown
-
-- `## Section` — top-level sections.
-- `### Sub-heading` — a role, project or degree.
-- `**bold**`, `_italic_`, `` `code` ``.
-- `- bullet` and `1. ordered` lists (a global column count can be set in the customiser).
-- `[text](url)` links.
-- `> blockquotes`, `---` horizontal rules and GFM tables.
-
-## 3. Layout symbols
-
-Symbols must be on their own line unless marked **inline**. Opening symbols close
-automatically at the next top-level `##` heading or at the end of the document.
-
-| Symbol | Purpose |
-| ------ | ------- |
-| `::col-2:: … ::end-col::` | Two to four balanced columns (`::col-3::`, `::col-4::`). Aliases: `::cols-2::`, `::columns-2::`, `::end-columns::`. |
-| `::row:: … ::end-row::` | Title on the left, date on the right. A trailing date is detected automatically. |
-| `::align-center:: … ::end-align::` | Align left, centre, right or justify. Variants: `::align-left::`, `::align-right::`, `::align-justify::`. |
-| `::badges:: … ::end-badges::` | Comma, middot or newline-separated items as pills. |
-| `::note:: … ::end-note::` | Italic callout with a tinted background. |
-| `::no-bullets:: … ::end-no-bullets::` | Lists without markers. |
-| `::compact:: … ::end-compact::` | Tighten vertical spacing inside the block. |
-| `::height-24::` | Exact spacer in pixels (0–400). |
-| `::page-break::` | New page in paginated PDFs; ignored by single-page exports. |
-| `::divider::` | Subtle theme-coloured horizontal rule. |
-
-### Inline symbols
-
-| Symbol | Purpose |
-| ------ | ------- |
-| `::rating-4::` | Five proficiency bars with N filled (0–5). |
-| `::badge[Remote]::` | A single pill. Aliases: `::pill[…]::`, `::tag[…]::`. |
-| `::icon[mail]::` | Inline glyph: mail, phone, globe, link, location, github, linkedin, code, star, check, calendar, clock, download, arrow, dot, diamond, spark. |
-| `::br::` | Hard line break inside a paragraph. |
-| `::no-icon::[Title](url)` | Suppress the automatic icon for one link. Also works inside the brackets and on the line above. |
-
-### Media
-
-| Symbol | Purpose |
-| ------ | ------- |
-| `::avatar[https://…/photo.jpg]::` | Circular profile photo floated beside the header. |
-| `::qr[https://example.com]::` | Real QR code generated locally and embedded in the PDF. |
-
-## 4. Suggested section order
-
-1. Header
-2. `## Summary`
-3. `## Technical Skills` — use `::col-2::` or `::badges::`
-4. `## Work Experience`
-5. `## Projects`
-6. `## Education`
-7. `## Certifications`
-8. `## Languages`
-
-## 5. Sample resume
-
-Copy everything below into the editor and replace the details.
-
-```markdown
-::align-center::
-# Alex Morgan
-
-### _Senior Software Engineer | Web & Cloud_
-
-[alex.morgan@example.com](mailto:alex.morgan@example.com) · +1 555 0142 · Berlin, Germany
-
-[alexmorgan.dev](https://alexmorgan.dev) · [linkedin.com/in/alexmorgan](https://linkedin.com/in/alexmorgan) · [github.com/alexmorgan](https://github.com/alexmorgan)
+[rohitchouhan.com](https://rohitchouhan.com) · [linkedin.com/in/itsrohitchouhan](https://linkedin.com/in/itsrohitchouhan) · [github.com/rohit-chouhan](https://github.com/rohit-chouhan) · [leetcode.com/u/rohit-chouhan](https://leetcode.com/u/rohit-chouhan)
 ::end-align::
 
 ## Summary
 
-Senior Software Engineer with 8+ years building reliable web platforms and cloud services using TypeScript, Node.js and React. Shipped products serving millions of requests per day with a focus on performance, observability and developer experience.
+Full-Stack Software Engineer with 9+ years of experience designing, developing, and scaling web applications, cloud platforms, AI-powered systems, and enterprise analytics solutions. Strong expertise in Node.js, TypeScript, React, REST/OData APIs, Generative AI, LLMs, RAG, and SAP Analytics Cloud Planning.
+
+Experienced in FP&A, budgeting, financial forecasting, variance analysis, performance reporting, and financial workflow automation. Proven track record of translating complex business requirements into scalable technology solutions, delivering improvements including up to 80% faster financial calculations, 40% higher backend throughput, 30% reduction in manual operations, and platforms supporting 1,000+ daily active professionals.
 
 ## Technical Skills
 
 ::col-2::
-- **Languages:** TypeScript, Python, Go, SQL
-- **Backend:** Node.js, FastAPI, GraphQL, REST APIs, Microservices
-- **Frontend:** React, Next.js, Tailwind CSS, TypeScript
-- **Cloud & DevOps:** AWS, Docker, Kubernetes, CI/CD, Terraform
-- **Databases:** PostgreSQL, Redis, DynamoDB
-- **Practices:** TDD, Code Review, System Design, Observability
+- **Languages:** JavaScript (ES6+), TypeScript, Java, SQL, PHP
+- **Backend Development:** Node.js, Express.js, REST APIs, GraphQL, Microservices, WebSockets, MVC, OAuth 2.0, JWT, Caching, Load Balancing
+- **Frontend Development:** React 18, Next.js, Angular, Vue.js, HTML5, CSS3, SCSS, Webpack
+- **Databases:** PostgreSQL, MySQL, MongoDB, Database Design, Query Optimization
+- **AI & Generative AI:** OpenAI API, LLMs, RAG, LangGraph, AI Agents, NLP, Prompt Engineering
+- **Cloud & DevOps:** Google Cloud Platform (GCP), GitHub Actions, CI/CD, Cloudflare, Appwrite, Firebase
+- **Enterprise Analytics & SAP:** SAP Analytics Cloud (SAC), SAC Planning, SAC JavaScript, Advanced Formulas, Data Actions, Data Modeling, Custom Widgets
+- **Finance & FP&A:** Financial Planning & Analysis, Budgeting, Financial Forecasting, P&L Planning, Allocations, Amortization, Variance Analysis
+- **Software Engineering:** System Design, Distributed Systems, Scalability, Performance Optimization, SDLC, Agile, Code Review, Test-Driven Development
 ::end-col::
 
 ## Work Experience
 
 ::row::
-**Northwind Systems** — Senior Software Engineer
-May 2022 – Present
+**Adidas Marketing India Pvt. Ltd.**
+May 2024 – Present
 ::end-row::
 
-_Berlin, Germany_
+*Software Engineer (Technology Analyst) | Gurugram, India*
 
-**Tech Stack:** _TypeScript, Node.js, React, AWS, GraphQL, CI/CD_
+**Tech Stack:** Node.js, React 18, TypeScript, SAP Analytics Cloud, OpenAI API, REST/OData APIs, RAG, LLMs, NLP, CI/CD, GitHub Actions
 
-- Led migration of a monolith to event-driven microservices, cutting p99 latency by 45%.
-- Built a shared component library adopted by 6 teams, reducing duplicate UI code by 60%.
-- Introduced end-to-end testing, lowering production incidents by 35%.
+- Architected an AI-powered FP&A analytics platform integrating LLMs, RAG, and SAP interfaces, enabling finance teams to query complex financial data and execute controlled bidirectional write-backs using natural language.
+- Developed and published SAC Pilot, a browser extension featuring 15+ developer utilities, including high-volume OData streaming (100K+ rows/sec), multi-tenant master data comparison, and client-side AES-256 encryption.
+- Engineered AskBot, an AI-powered conversational assistant for SAP Analytics Cloud using NLP and OpenAI APIs, supporting 1,000+ daily active professionals and reducing support dependency by 50%.
+- Developed scalable Node.js and TypeScript microservices with REST APIs, response caching, CDN delivery, and load balancing to support enterprise AI and analytics workloads.
+- Optimized SAC Data Actions and FP&A calculation services through algorithmic refactoring, caching strategies, and API tuning, reducing financial calculation runtimes by 80%.
+- Improved backend data pipeline throughput by 40%, automated recurring business workflows to reduce manual effort by 30%, and developed interactive React dashboards for Finance and Operations.
+- Implemented automated CI/CD pipelines using GitHub Actions, reducing deployment lead time by 25% and release defects by 35%.
+- Built a configurable OpenAI chat integration for SAP Analytics Cloud featuring dynamic model parameters, supporting 400+ daily active users and achieving adoption as a native SAP capability.
+- Translated strategic FP&A requirements into scalable SAC Planning architectures, automating budgeting, financial forecasting, and variance analysis workflows.
 
 ::row::
-**Bright Labs** — Software Engineer
-Jun 2019 – Dec 2021
+**Deloitte Consulting**
+July 2021 – May 2024
 ::end-row::
 
-_Remote_
+*Associate Analyst | Gurugram, India*
 
-- Developed REST APIs powering a B2B analytics dashboard used by 200+ customers.
-- Containerized the stack with Docker and authored CI pipelines reducing release time by 50%.
+**Tech Stack:** Node.js, React.js, Angular, TypeScript, REST APIs, CI/CD, Webpack, GitHub Actions, SAP Analytics Cloud
+
+- Delivered SAP Analytics Cloud planning and analytics solutions for three enterprise clients: Gilead, Alnylam, and Warner Bros. Discovery, developing dimensional data models that eliminated 50% of manual data handling.
+- Engineered SAP data pipelines using CDS Views and REST APIs to integrate data with Databricks and Power BI, reducing data-exchange effort by 40%.
+- Developed 15+ reusable SAC custom widgets and a natural-language code-generation engine using React and Node.js, adopted by 1,000+ users and reducing report development time by up to 85%.
+- Automated complex FP&A workflows using SAC Advanced Formulas and Data Actions covering allocations, P&L planning, and amortization, improving process efficiency by 25%.
+- Developed Angular executive reporting dashboards, improving reporting fidelity by 80%, and implemented CI/CD pipelines that reduced deployment lead times by 25% and defect rates by 35%.
+- Established unit and integration testing standards, achieving 85%+ code coverage and 60% fewer production regressions.
+- Mentored 10+ engineers and received Deloitte Applause Award and Man of the Show recognition.
+- Configured and validated enterprise SAC role-based access controls (RBAC) and lifecycle object transportation across Development, Test, and Production environments for three global client accounts.
+
+::row::
+**Codebrine**
+March 2017 – July 2021
+::end-row::
+
+*Founder & Full-Stack Developer | Ajmer, India*
+
+**Tech Stack:** Node.js, React Native, Angular, Vue.js, PHP (CodeIgniter), Flutter, MySQL, Firebase, REST APIs
+
+- Founded a software consultancy and independently architected and delivered 50+ web and mobile client solutions, covering the complete development lifecycle from conception to production deployment.
+- Developed scalable web backends using Node.js and PHP, leveraging Redis caching, SQL query optimization, and CDN routing to improve API response times by 35%.
+- Built and published cross-platform iOS and Android applications using Flutter and React Native, reducing development cycles by 30% compared with native development.
+- Engineered full-stack applications using React, Angular, Vue.js, and Node.js REST APIs, optimizing Core Web Vitals and frontend performance to improve user engagement by 25%.
+- Automated deployment workflows for multi-tier application stacks, reducing configuration inconsistencies and accelerating release turnaround by 30%.
 
 ## Projects
 
-### Open Metrics Dashboard
+- **SAC Pilot: Productivity Browser Extension:** Developed a zero-trust client-side browser extension with 15+ utilities, including 100K+ rows/sec fact data streaming, multi-tenant master data comparison, and AES-256 encryption.
+- **AskBot: AI Intelligent Workflow System:** Engineered an NLP-powered conversational assistant for SAP Analytics Cloud using OpenAI APIs, supporting 1,000+ daily active professionals and reducing support dependency by 50%.
+- **ChatGPT Integration for SAP Analytics Cloud:** Architected a customizable AI chat widget featuring dynamic OpenAI API configuration, model selection, temperature tuning, and token limits, supporting 400+ daily active users.
+- **FormFlex: Dynamic Form Builder Framework:** Created an adaptive form builder widget for SAP Analytics Cloud, reducing form creation time by 85% and supporting 300+ daily active enterprise users.
+- **SAC Natural-Language Code Generation Engine:** Developed a React-based developer tool converting natural-language prompts into SAC script code, actively used by 1,000+ business users.
+- **Reusable SAP Custom Widgets Library:** Architected an open-source library of 15+ reusable SAC custom widgets using HTML5, JavaScript, and Web Components.
 
-An open-source observability dashboard built with Next.js and a WebSocket ingestion service.
+## Professional Achievements
 
-[View repository](https://github.com/alexmorgan/open-metrics)
+- **Adidas AI Innovation Award (2026):** Recognized for architecting AskBot, an enterprise AI assistant adopted as a native SAP feature.
+- **Adidas Innovation Award – Execution & Automation (2026):** Recognized for automating high-volume business event operations and eliminating manual bottlenecks.
+- **SAP Global Native Integration (2025):** Full-stack AI extension selected for native integration into SAP Analytics Cloud for global enterprise users.
+- **Deloitte Firm Recognitions (2022–2024):** Received Applause Award, Man of the Show, SAP Sustainability Award, and 3× Vantage Points recognitions.
+- **Competitive Programming:** Solved 2,600+ algorithmic problems with a 95% acceptance rate, ranking in approximately the top 1% globally across all tiers.
 
 ## Education
 
 ::row::
-**Technische Universität Berlin** — B.Sc. Computer Science
-2015 – 2019
+**Maharshi Dayanand Saraswati University**
+August 2017 – February 2020
 ::end-row::
 
-_Grade: 1.7_
+*Bachelor of Computer Applications (BCA), Information Technology* · CGPA: 7.5/10
 
 ## Certifications
 
-- **AWS Certified Solutions Architect — Associate** | Amazon Web Services (2023)
-- **Professional Scrum Master I** | Scrum.org (2021)
-
-## Languages
-
-::badges::
-English · German · Spanish
-::end-badges::
-```
-
-## Tips
-
-- Keep the first heading as your name and the next line as your title.
-- Put a trailing date inside `::row::` to right-align it. Month names, numeric dates and years all work.
-- Use `::col-2::` for dense skill lists to save vertical space.
-- Thematic breaks in the customiser (font, colours, spacing) are independent of the content.
-- Export a backup (JSON) before switching devices — resumes are stored per browser.
+- **Microsoft Certified: Azure AI Engineer Associate** | Microsoft (December 2022)
+- **AWS Solutions Architect Preparation Course** | Udemy (July 2025)
+- **LLM Engineering: Master AI, Large Language Models & Agents** | Udemy (July 2025)
+- **Develop LLM-Powered AI Agents with LangGraph** | Udemy (July 2026)

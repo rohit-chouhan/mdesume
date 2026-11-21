@@ -112,11 +112,11 @@ documents every symbol with a live example.
 
 ```markdown
 ::align-center::
-# Alex Morgan
+# Rohit Chouhan
 
-### _Senior Software Engineer_
+### _Full-Stack Software Engineer_
 
-[alex@example.com](mailto:alex@example.com) · Berlin, Germany
+[rohit@example.com](mailto:rohit@example.com) · India
 ::end-align::
 
 ## Experience

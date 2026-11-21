@@ -11,7 +11,7 @@ describe("ResumeSheet rendering", () => {
     const { container } = render(<ResumeSheet markdown={SAMPLE_MARKDOWN} styles={styles} />);
     const heading = container.querySelector("h1");
     expect(heading).toHaveClass("resume-name");
-    expect(heading).toHaveTextContent("Alex Morgan");
+    expect(heading).toHaveTextContent("Rohit Chouhan");
   });
 
   it("renders columns, rows and dates from the sample", () => {
@@ -24,7 +24,7 @@ describe("ResumeSheet rendering", () => {
   it("renders badges from the sample", () => {
     const { container } = render(<ResumeSheet markdown={SAMPLE_MARKDOWN} styles={styles} />);
     const badges = Array.from(container.querySelectorAll(".resume-badge")).map((node) => node.textContent);
-    expect(badges).toEqual(expect.arrayContaining(["English", "German", "Spanish"]));
+    expect(badges).toEqual(expect.arrayContaining(["English", "Hindi"]));
   });
 
   it("applies theme classes and CSS variables", () => {
@@ -45,9 +45,9 @@ describe("ResumeSheet rendering", () => {
   });
 
   it("renders platform icons for recognised links and suppresses them for ::no-icon::", () => {
-    const markdown = `# Alex
-[GitHub](https://github.com/alex)
-[LinkedIn](https://linkedin.com/in/alex)
+    const markdown = `# Rohit
+[GitHub](https://github.com/rohit)
+[LinkedIn](https://linkedin.com/in/rohit)
 ::no-icon::[Plain](https://example.com)
 `;
     const { container } = render(<ResumeSheet markdown={markdown} styles={styles} />);
@@ -59,7 +59,7 @@ describe("ResumeSheet rendering", () => {
   it("can disable link icons globally", () => {
     const { container } = render(
       <ResumeSheet
-        markdown={`# Alex\n[GitHub](https://github.com/alex)`}
+        markdown={`# Rohit\n[GitHub](https://github.com/rohit)`}
         styles={createSampleStyles({ showLinkIcons: false })}
       />,
     );
@@ -68,7 +68,7 @@ describe("ResumeSheet rendering", () => {
 
   it("never leaks a documented symbol as literal text", () => {
     const markdown = [
-      "# Alex Morgan",
+      "# Rohit Chouhan",
       "::badges::",
       "TypeScript, React",
       "::end-badges::",
@@ -81,7 +81,7 @@ describe("ResumeSheet rendering", () => {
       "::end-row::",
       "**Level** ::rating-3::",
       "Senior ::badge[Remote]::",
-      "::icon[mail]:: alex@example.com",
+      "::icon[mail]:: rohit@example.com",
       "::note::",
       "Available soon",
       "::end-note::",

@@ -838,7 +838,7 @@ export default function Customizer({
               className="field-input"
               value={metadata.title ?? ""}
               onChange={(event) => setMeta("title", event.target.value)}
-              placeholder="Alex Morgan — Resume"
+              placeholder="Rohit Chouhan — Resume"
             />
           </div>
           <p className="field-hint">

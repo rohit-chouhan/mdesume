@@ -5,21 +5,21 @@ import type { ResumeStyles } from "@/lib/db";
 import { THEMES } from "@/lib/themes";
 
 const PREVIEW_MARKDOWN = `::align-center::
-# Alex Morgan
-_Senior Software Engineer_
+# Rohit Chouhan
+_Full-Stack Software Engineer_
 
-alex@example.com · Berlin, Germany
+me@rohitchouhan.com · Gurugram, India
 ::end-align::
 
 ## Experience
 
 ::row::
-**Northwind Systems** — Senior Engineer
-May 2022 – Present
+**Adidas Marketing India** — Software Engineer
+May 2024 – Present
 ::end-row::
 
-- Cut p99 latency by 45% with event-driven services.
-- Built a component library used by six teams.
+- Architected AI FP&A platform with LLMs and RAG.
+- Optimized calculation runtimes by 80%.
 
 ## Skills
 

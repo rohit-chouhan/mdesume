@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { analyzeResume } from "@/lib/analyzer";
 
-const goodResume = `# Alex Morgan
+const goodResume = `# Rohit Chouhan
 
 ## Summary
 

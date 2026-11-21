@@ -61,7 +61,7 @@ describe("normalizeDirectives / block layouts", () => {
   });
 
   it("keeps a heading that opens an align block (centred name)", () => {
-    const tree = parseResume(`::align-center::\n# Alex Morgan\n\n_Senior Engineer_\n::end-align::`);
+    const tree = parseResume(`::align-center::\n# Rohit Chouhan\n\n_Senior Engineer_\n::end-align::`);
     const align = findNodes(tree, (node) =>
       String(node.data?.hProperties?.className ?? "").includes("resume-align-center"),
     )[0];
@@ -140,7 +140,7 @@ describe("inline symbols", () => {
   });
 
   it("renders an inline icon", () => {
-    const tree = parseResume(`::icon[mail]:: alex@example.com`);
+    const tree = parseResume(`::icon[mail]:: rohit@example.com`);
     const icon = findNodes(tree, (node) => node.data?.hProperties?.className === "resume-inline-icon")[0];
     expect(icon).toBeDefined();
     expect(collectText(icon)).toBe("✉");
