@@ -12,6 +12,7 @@ export default defineConfig({
     css: false,
     fileParallelism: false,
     pool: "threads",
+    isolate: false,
   },
   resolve: {
     alias: {

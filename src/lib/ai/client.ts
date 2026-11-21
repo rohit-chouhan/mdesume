@@ -12,16 +12,26 @@ export async function callAi(
 ): Promise<string> {
   const systemPrompt = options?.systemPrompt || buildSystemPrompt();
 
-  switch (provider.provider) {
-    case "gemini":
-      return callGemini(provider, messages, systemPrompt, options);
-    case "anthropic":
-      return callAnthropic(provider, messages, systemPrompt, options);
-    case "openai":
-    case "groq":
-    case "custom":
-    default:
-      return callOpenAiCompatible(provider, messages, systemPrompt, options);
+  try {
+    switch (provider.provider) {
+      case "gemini":
+        return await callGemini(provider, messages, systemPrompt, options);
+      case "anthropic":
+        return await callAnthropic(provider, messages, systemPrompt, options);
+      case "openai":
+      case "groq":
+      case "custom":
+      default:
+        return await callOpenAiCompatible(provider, messages, systemPrompt, options);
+    }
+  } catch (err) {
+    if (err instanceof TypeError && err.message.toLowerCase().includes("failed to fetch")) {
+      throw new Error(
+        `Failed to fetch (${provider.name}): The endpoint (${provider.baseUrl || "API"}) could not be reached. If using a custom/remote provider, verify the URL and ensure it allows browser CORS requests. For local models, check that Ollama is running.`,
+        { cause: err },
+      );
+    }
+    throw err;
   }
 }
 

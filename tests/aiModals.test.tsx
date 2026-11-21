@@ -111,5 +111,37 @@ describe("AI Modals & Components", () => {
 
       expect(screen.getByText(/detailed feedback/i)).toBeInTheDocument();
     });
+
+    it("displays 0 score when AI scan fails instead of falling back to classic score", async () => {
+      saveAiProvider({
+        id: "p1",
+        name: "Failing Provider",
+        provider: "custom",
+        apiKey: "",
+        baseUrl: "http://failing-endpoint.local",
+        model: "custom",
+        enableThinking: false,
+        createdAt: 1700000000000,
+      });
+
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+
+      try {
+        render(
+          <AnalyzerModal
+            open={true}
+            onClose={() => {}}
+            markdown="# Rohit Chouhan\n\n## Experience\n- Led development"
+          />,
+        );
+
+        const scoreZero = await screen.findByText("0");
+        expect(scoreZero).toBeInTheDocument();
+        expect(screen.getByText(/score unavailable/i)).toBeInTheDocument();
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
   });
 });

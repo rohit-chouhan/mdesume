@@ -92,13 +92,55 @@ function AnalyzerDialog({
     };
   }, [onClose]);
 
-  const currentScore = activeTab === "ai" && aiResult ? aiResult.score : classicResult.score;
-  const tone =
-    currentScore >= 80
-      ? { stroke: "text-emerald-500", label: "Excellent — ATS optimized." }
-      : currentScore >= 60
-        ? { stroke: "text-amber-500", label: "Good start, with room to optimize." }
-        : { stroke: "text-rose-500", label: "Needs optimization to pass enterprise ATS." };
+  const isAiTab = activeTab === "ai";
+  const hasAiError = isAiTab && Boolean(aiError);
+  const isAiLoading = isAiTab && loadingAi;
+
+  let currentScore: number | string = classicResult.score;
+  let tone = {
+    stroke:
+      classicResult.score >= 80
+        ? "text-emerald-500"
+        : classicResult.score >= 60
+          ? "text-amber-500"
+          : "text-rose-500",
+    label:
+      classicResult.score >= 80
+        ? "Excellent — highly optimised."
+        : classicResult.score >= 60
+          ? "Good start, with room to improve."
+          : "Needs work to stand out.",
+  };
+
+  if (isAiTab) {
+    if (hasAiError) {
+      currentScore = 0;
+      tone = {
+        stroke: "text-rose-500",
+        label: "Scan failed — score unavailable.",
+      };
+    } else if (isAiLoading) {
+      currentScore = "…";
+      tone = {
+        stroke: "text-brand-500",
+        label: "Evaluating resume against ATS screening engines…",
+      };
+    } else if (aiResult) {
+      currentScore = aiResult.score;
+      tone =
+        aiResult.score >= 80
+          ? { stroke: "text-emerald-500", label: "Excellent — ATS optimized." }
+          : aiResult.score >= 60
+            ? { stroke: "text-amber-500", label: "Good start, with room to optimize." }
+            : { stroke: "text-rose-500", label: "Needs optimization to pass enterprise ATS." };
+    } else {
+      currentScore = 0;
+      tone = {
+        stroke: "text-slate-400 dark:text-slate-600",
+        label: "Ready to run AI ATS scan.",
+      };
+    }
+  }
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -220,21 +262,21 @@ function AnalyzerDialog({
                   stroke="currentColor"
                   strokeWidth="3"
                   strokeLinecap="round"
-                  strokeDasharray={`${currentScore}, 100`}
+                  strokeDasharray={`${typeof currentScore === "number" ? currentScore : 0}, 100`}
                   className={tone.stroke}
                 />
               </svg>
               <div className="absolute text-center">
                 <span className="block text-3xl font-black tabular-nums text-slate-900 dark:text-white">
-                  {loadingAi ? "…" : currentScore}
+                  {currentScore}
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  {activeTab === "ai" ? "ATS Score" : "Score"}
+                  {isAiTab ? "ATS Score" : "Score"}
                 </span>
               </div>
             </div>
             <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
-              {loadingAi ? "Running AI ATS audit…" : tone.label}
+              {tone.label}
             </p>
             {activeTab === "ai" && aiResult?.summary && (
               <p className="text-xs text-center text-slate-500 max-w-md dark:text-slate-400">
